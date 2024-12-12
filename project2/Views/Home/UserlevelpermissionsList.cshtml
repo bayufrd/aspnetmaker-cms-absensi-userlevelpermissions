@@ -1,0 +1,262 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelpermissionsList.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelpermissionsList.UseLayout ? "_Layout" : "";
+}
+@if (!userlevelpermissionsList.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelpermissionsList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevelpermissions: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(userlevelpermissionsList.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(userlevelpermissionsList.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(userlevelpermissionsList.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(userlevelpermissionsList.FormKeyCountName)")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!userlevelpermissionsList.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (userlevelpermissionsList.TotalRecords > 0 && userlevelpermissionsList.ExportOptions.Visible) {
+    userlevelpermissionsList.ExportOptions.Render("body");
+}
+@if (userlevelpermissionsList.ImportOptions.Visible) {
+    userlevelpermissionsList.ImportOptions.Render("body");
+}
+@if (userlevelpermissionsList.SearchOptions.Visible) {
+    userlevelpermissionsList.SearchOptions.Render("body");
+}
+@if (userlevelpermissionsList.FilterOptions.Visible) {
+    userlevelpermissionsList.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!userlevelpermissionsList.IsModal) {
+<form name="fuserlevelpermissionssrch" id="fuserlevelpermissionssrch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fuserlevelpermissionssrch_search_panel" class="mb-2 mb-sm-0 @(userlevelpermissionsList.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelpermissionsList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevelpermissions: currentTable } });
+var currentForm;
+var fuserlevelpermissionssrch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelpermissionssrch")
+        .setPageId("list")
+@if (userlevelpermissionsList.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(userlevelpermissionsList.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (Security.CanSearch) {
+if (!userlevelpermissionsList.IsExport() && Empty(userlevelpermissionsList.CurrentAction) && userlevelpermissionsList.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(userlevelpermissionsList.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(userlevelpermissionsList.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(userlevelpermissionsList.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(userlevelpermissionsList.BasicSearch.SessionType == "" ? " active" : "")" form="fuserlevelpermissionssrch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(userlevelpermissionsList.BasicSearch.SessionType == "=" ? " active" : "")" form="fuserlevelpermissionssrch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(userlevelpermissionsList.BasicSearch.SessionType == "AND" ? " active" : "")" form="fuserlevelpermissionssrch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(userlevelpermissionsList.BasicSearch.SessionType == "OR" ? " active" : "")" form="fuserlevelpermissionssrch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+}
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@userlevelpermissionsList.ShowPageHeader()
+@userlevelpermissionsList.ShowMessages()
+<main class="list @(userlevelpermissionsList.TotalRecords == 0 && !userlevelpermissionsList.IsAdd ? " ew-no-record" : "")">
+<div id="ew-header-options">
+    @userlevelpermissionsList.HeaderOptions.RenderBody()
+</div>
+<div id="ew-list">
+@if (userlevelpermissionsList.TotalRecords > 0 || !Empty(userlevelpermissionsList.CurrentAction)) {
+<div class="card ew-card ew-grid@(userlevelpermissionsList.IsAddOrEdit ? " ew-grid-add-edit" : "") @(userlevelpermissionsList.TableGridClass)">
+<form name="@(userlevelpermissionsList.FormName)" id="@(userlevelpermissionsList.FormName)" class="ew-form ew-list-form" action="@AppPath(userlevelpermissionsList.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (userlevelpermissionsList.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_userlevelpermissions" class="card-body ew-grid-middle-panel @(userlevelpermissionsList.TableContainerClass)" style="@(userlevelpermissionsList.TableContainerStyle)">
+@if (userlevelpermissionsList.TotalRecords > 0 || userlevelpermissionsList.IsGridEdit || userlevelpermissionsList.IsMultiEdit) {
+<table id="tbl_userlevelpermissionslist" class="@(userlevelpermissionsList.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    userlevelpermissionsList.RowType = RowType.Header;
+
+    // Render list options
+    await userlevelpermissionsList.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@userlevelpermissionsList.ListOptions.RenderHeader("left")
+@if (userlevelpermissionsList.UserLevelID.Visible) { // userlevelpermissionsList.UserLevelID.Visible (begin)
+        <th data-name="UserLevelID" class="@(userlevelpermissionsList.UserLevelID.HeaderCellClass)"><div id="elh_userlevelpermissions_UserLevelID" class="userlevelpermissions_UserLevelID">@Html.Raw(userlevelpermissionsList.RenderFieldHeader(userlevelpermissionsList.UserLevelID))</div></th>
+} @* userlevelpermissionsList.UserLevelID.Visible (end) *@
+@if (userlevelpermissionsList._TableName.Visible) { // userlevelpermissionsList._TableName.Visible (begin)
+        <th data-name="_TableName" class="@(userlevelpermissionsList._TableName.HeaderCellClass)"><div id="elh_userlevelpermissions__TableName" class="userlevelpermissions__TableName">@Html.Raw(userlevelpermissionsList.RenderFieldHeader(userlevelpermissionsList._TableName))</div></th>
+} @* userlevelpermissionsList._TableName.Visible (end) *@
+@if (userlevelpermissionsList.Permission.Visible) { // userlevelpermissionsList.Permission.Visible (begin)
+        <th data-name="Permission" class="@(userlevelpermissionsList.Permission.HeaderCellClass)"><div id="elh_userlevelpermissions_Permission" class="userlevelpermissions_Permission">@Html.Raw(userlevelpermissionsList.RenderFieldHeader(userlevelpermissionsList.Permission))</div></th>
+} @* userlevelpermissionsList.Permission.Visible (end) *@
+@* Render list options (header, right) *@
+@userlevelpermissionsList.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(userlevelpermissionsList.PageNumber)">
+@{
+    await userlevelpermissionsList.SetupGrid();
+    bool eof = userlevelpermissionsList.Recordset == null; // DN
+}
+@while (userlevelpermissionsList.RecordCount < userlevelpermissionsList.StopRecord || SameString(userlevelpermissionsList.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(userlevelpermissionsList.RowIndex, "$rowindex$") &&
+        (!userlevelpermissionsList.IsGridAdd || userlevelpermissionsList.CurrentMode == "copy") &&
+        (!((userlevelpermissionsList.IsCopy || userlevelpermissionsList.IsAdd) && userlevelpermissionsList.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await userlevelpermissionsList.Recordset.ReadAsync();
+    userlevelpermissionsList.RecordCount++;
+    if (userlevelpermissionsList.RecordCount >= userlevelpermissionsList.StartRecord) {
+        await userlevelpermissionsList.SetupRow();
+    <tr @Html.Raw(userlevelpermissionsList.RowAttributes)>
+    @* Render list options (body, left) *@
+    @userlevelpermissionsList.ListOptions.RenderBody("left", userlevelpermissionsList.RowCount)
+    @if (userlevelpermissionsList.UserLevelID.Visible) { // userlevelpermissionsList.UserLevelID.Visible (begin)
+        <td data-name="UserLevelID" @Html.Raw(userlevelpermissionsList.UserLevelID.CellAttributes)>
+<span id="el@(userlevelpermissionsList.RowIndex == "$rowindex$" ? "$rowindex$" : userlevelpermissionsList.RowCount)_userlevelpermissions_UserLevelID" class="el_userlevelpermissions_UserLevelID">
+<span @Html.Raw(userlevelpermissionsList.UserLevelID.ViewAttributes)>
+@Html.Raw(userlevelpermissionsList.UserLevelID.GetViewValue())</span>
+</span>
+</td>
+    } @* userlevelpermissionsList.UserLevelID.Visible (end) *@
+    @if (userlevelpermissionsList._TableName.Visible) { // userlevelpermissionsList._TableName.Visible (begin)
+        <td data-name="_TableName" @Html.Raw(userlevelpermissionsList._TableName.CellAttributes)>
+<span id="el@(userlevelpermissionsList.RowIndex == "$rowindex$" ? "$rowindex$" : userlevelpermissionsList.RowCount)_userlevelpermissions__TableName" class="el_userlevelpermissions__TableName">
+<span @Html.Raw(userlevelpermissionsList._TableName.ViewAttributes)>
+@Html.Raw(userlevelpermissionsList._TableName.GetViewValue())</span>
+</span>
+</td>
+    } @* userlevelpermissionsList._TableName.Visible (end) *@
+    @if (userlevelpermissionsList.Permission.Visible) { // userlevelpermissionsList.Permission.Visible (begin)
+        <td data-name="Permission" @Html.Raw(userlevelpermissionsList.Permission.CellAttributes)>
+<span id="el@(userlevelpermissionsList.RowIndex == "$rowindex$" ? "$rowindex$" : userlevelpermissionsList.RowCount)_userlevelpermissions_Permission" class="el_userlevelpermissions_Permission">
+<span @Html.Raw(userlevelpermissionsList.Permission.ViewAttributes)>
+@Html.Raw(userlevelpermissionsList.Permission.GetViewValue())</span>
+</span>
+</td>
+    } @* userlevelpermissionsList.Permission.Visible (end) *@
+    @* Render list options (body, right) *@
+    @userlevelpermissionsList.ListOptions.RenderBody("right", userlevelpermissionsList.RowCount)
+    </tr>
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(userlevelpermissionsList.RowIndex, "$rowindex$"))
+        userlevelpermissionsList.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((userlevelpermissionsList.IsCopy || userlevelpermissionsList.IsAdd) && userlevelpermissionsList.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        userlevelpermissionsList.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(userlevelpermissionsList.CurrentAction) && !userlevelpermissionsList.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ userlevelpermissionsList.CloseRecordset(); }
+@if (!userlevelpermissionsList.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!userlevelpermissionsList.IsGridAdd && !(userlevelpermissionsList.IsGridEdit && userlevelpermissionsList.ModalGridEdit) && !userlevelpermissionsList.IsMultiEdit) {
+@Html.Raw(userlevelpermissionsList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@userlevelpermissionsList.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@userlevelpermissionsList.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+</div>
+<div id="ew-footer-options">
+    @userlevelpermissionsList.FooterOptions.RenderBody()
+</div>
+</main>
+@userlevelpermissionsList.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!userlevelpermissionsList.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("userlevelpermissions");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

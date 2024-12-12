@@ -1,0 +1,116 @@
+<ew-language date="2024/12/13" id="en-US" author="e.World Technology Limited">
+  <project>
+    <phrase id="footertext" value="&amp;copy;2024 e.World Technology Limited. All rights reserved." />
+    <menu id="1">
+      <phrase id="menutext" value="buku tamu" />
+    </menu>
+    <menu id="3">
+      <phrase id="menutext" value="userlevelpermissions" />
+    </menu>
+    <menu id="4">
+      <phrase id="menutext" value="userlevels" />
+    </menu>
+    <menu id="5">
+      <phrase id="menutext" value="users" />
+    </menu>
+    <menu id="6">
+      <phrase id="menutext" value="absensi" />
+    </menu>
+    <table id="buku_tamu">
+      <phrase id="tblcaption" value="buku tamu" />
+      <chart id="umurpengunjung">
+        <phrase id="chartcaption" value="Umur Pengunjung" />
+        <phrase id="chartxaxisname" value="tanggal kunjungan" />
+        <phrase id="chartyaxisname" value="umur" />
+      </chart>
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="umur">
+        <phrase id="fldcaption" value="umur" />
+      </field>
+      <field id="tanggal_kunjungan">
+        <phrase id="fldcaption" value="tanggal kunjungan" />
+      </field>
+      <field id="tujuan">
+        <phrase id="fldcaption" value="tujuan" />
+      </field>
+      <field id="komentar">
+        <phrase id="fldcaption" value="komentar" />
+      </field>
+    </table>
+    <table id="userlevelpermissions">
+      <phrase id="tblcaption" value="userlevelpermissions" />
+      <field id="userlevelid">
+        <phrase id="fldcaption" value="User Level ID" />
+      </field>
+      <field id="_tablename">
+        <phrase id="fldcaption" value="Table Name" />
+      </field>
+      <field id="permission">
+        <phrase id="fldcaption" value="Permission" />
+      </field>
+    </table>
+    <table id="userlevels">
+      <phrase id="tblcaption" value="userlevels" />
+      <field id="userlevelid">
+        <phrase id="fldcaption" value="User Level ID" />
+      </field>
+      <field id="userlevelname">
+        <phrase id="fldcaption" value="User Level Name" />
+      </field>
+    </table>
+    <table id="users">
+      <phrase id="tblcaption" value="users" />
+      <field id="user_id">
+        <phrase id="fldcaption" value="user id" />
+      </field>
+      <field id="_username">
+        <phrase id="fldcaption" value="username" />
+      </field>
+      <field id="password">
+        <phrase id="fldcaption" value="password" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="user_level_id">
+        <phrase id="fldcaption" value="user level id" />
+      </field>
+    </table>
+    <table id="absensi">
+      <phrase id="tblcaption" value="absensi" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="user_id">
+        <phrase id="fldcaption" value="user id" />
+      </field>
+      <field id="tanggal">
+        <phrase id="fldcaption" value="tanggal" />
+      </field>
+      <field id="jam_masuk">
+        <phrase id="fldcaption" value="jam masuk" />
+      </field>
+      <field id="jam_keluar">
+        <phrase id="fldcaption" value="jam keluar" />
+      </field>
+      <field id="status">
+        <phrase id="fldcaption" value="status" />
+        <phrase id="fldtagvalue1" value="WFO" />
+        <phrase id="fldtagcaption1" value="WFO" />
+        <phrase id="fldtagvalue2" value="WFH" />
+        <phrase id="fldtagcaption2" value="WFH" />
+      </field>
+      <field id="lokasi">
+        <phrase id="fldcaption" value="lokasi" />
+      </field>
+      <field id="foto_verifikasi">
+        <phrase id="fldcaption" value="foto verifikasi" />
+      </field>
+    </table>
+  </project>
+</ew-language>

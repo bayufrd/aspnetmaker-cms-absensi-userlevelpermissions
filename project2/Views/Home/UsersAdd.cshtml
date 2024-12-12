@@ -1,0 +1,190 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (usersAdd.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = usersAdd.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(usersAdd.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { users: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fusersadd;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fusersadd")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["_username", [fields._username.visible && fields._username.required ? ew.Validators.required(fields._username.caption) : null], fields._username.isInvalid],
+            ["password", [fields.password.visible && fields.password.required ? ew.Validators.required(fields.password.caption) : null], fields.password.isInvalid],
+            ["_email", [fields._email.visible && fields._email.required ? ew.Validators.required(fields._email.caption) : null], fields._email.isInvalid],
+            ["user_level_id", [fields.user_level_id.visible && fields.user_level_id.required ? ew.Validators.required(fields.user_level_id.caption) : null], fields.user_level_id.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+            "user_level_id": @Html.Raw(usersAdd.user_level_id.ToClientList(usersAdd)),
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@usersAdd.ShowPageHeader()
+@usersAdd.ShowMessages()
+<form name="fusersadd" id="fusersadd" class="@(usersAdd.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(usersAdd.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(usersAdd.OldKeyName)" value="@Html.Raw(usersAdd.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (usersAdd._username.Visible) { // usersAdd._username.Visible (begin)
+    <div id="r__username" @Html.Raw(usersAdd._username.RowAttributes)>
+        <label id="elh_users__username" for="x__username" class="@(usersAdd.LeftColumnClass)">@Html.Raw(usersAdd._username.Caption)@Html.Raw(usersAdd._username.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(usersAdd.RightColumnClass)"><div @Html.Raw(usersAdd._username.CellAttributes)>
+<span id="el_users__username">
+<input type="@(usersAdd._username.InputTextType)" name="x__username" id="x__username" data-table="users" data-field="x__username" value="@Html.Raw(usersAdd._username.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(usersAdd._username.PlaceHolder))" data-format-pattern="@(usersAdd._username.FormatPattern)"@Html.Raw(usersAdd._username.EditAttributes) aria-describedby="x__username_help">
+@Html.Raw(usersAdd._username.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(usersAdd._username.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* usersAdd._username.Visible (end) *@
+@if (usersAdd.password.Visible) { // usersAdd.password.Visible (begin)
+    <div id="r_password" @Html.Raw(usersAdd.password.RowAttributes)>
+        <label id="elh_users_password" for="x_password" class="@(usersAdd.LeftColumnClass)">@Html.Raw(usersAdd.password.Caption)@Html.Raw(usersAdd.password.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(usersAdd.RightColumnClass)"><div @Html.Raw(usersAdd.password.CellAttributes)>
+<span id="el_users_password">
+<div class="input-group">
+    <input type="password" name="x_password" id="x_password" autocomplete="new-password" data-field="x_password" size="30" maxlength="255" placeholder="@(HtmlEncode(usersAdd.password.PlaceHolder))"@Html.Raw(usersAdd.password.EditAttributes) aria-describedby="x_password_help">
+    <button type="button" class="btn btn-default ew-toggle-password rounded-end" data-ew-action="password"><i class="fa-solid fa-eye"></i></button>
+</div>
+@Html.Raw(usersAdd.password.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(usersAdd.password.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* usersAdd.password.Visible (end) *@
+@if (usersAdd._email.Visible) { // usersAdd._email.Visible (begin)
+    <div id="r__email" @Html.Raw(usersAdd._email.RowAttributes)>
+        <label id="elh_users__email" for="x__email" class="@(usersAdd.LeftColumnClass)">@Html.Raw(usersAdd._email.Caption)@Html.Raw(usersAdd._email.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(usersAdd.RightColumnClass)"><div @Html.Raw(usersAdd._email.CellAttributes)>
+<span id="el_users__email">
+<input type="@(usersAdd._email.InputTextType)" name="x__email" id="x__email" data-table="users" data-field="x__email" value="@Html.Raw(usersAdd._email.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(usersAdd._email.PlaceHolder))" data-format-pattern="@(usersAdd._email.FormatPattern)"@Html.Raw(usersAdd._email.EditAttributes) aria-describedby="x__email_help">
+@Html.Raw(usersAdd._email.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(usersAdd._email.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* usersAdd._email.Visible (end) *@
+@if (usersAdd.user_level_id.Visible) { // usersAdd.user_level_id.Visible (begin)
+    <div id="r_user_level_id" @Html.Raw(usersAdd.user_level_id.RowAttributes)>
+        <label id="elh_users_user_level_id" for="x_user_level_id" class="@(usersAdd.LeftColumnClass)">@Html.Raw(usersAdd.user_level_id.Caption)@Html.Raw(usersAdd.user_level_id.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(usersAdd.RightColumnClass)"><div @Html.Raw(usersAdd.user_level_id.CellAttributes)>
+@if (!Security.IsAdmin && Security.IsLoggedIn) { // Non system admin
+<span id="el_users_user_level_id">
+<span class="form-control-plaintext">@Html.Raw(usersAdd.user_level_id.DisplayValue(usersAdd.user_level_id.EditValue))</span>
+</span>
+} else {
+<span id="el_users_user_level_id">
+    <select
+        id="x_user_level_id"
+        name="x_user_level_id"
+        class="form-select ew-select@(usersAdd.user_level_id.IsInvalidClass)"
+        data-select2-id="fusersadd_x_user_level_id"
+        data-table="users"
+        data-field="x_user_level_id"
+        data-value-separator="@(usersAdd.user_level_id.DisplayValueSeparatorAttribute)"
+        data-placeholder="@(HtmlEncode(usersAdd.user_level_id.PlaceHolder))"
+        @Html.Raw(usersAdd.user_level_id.EditAttributes)>
+        @(usersAdd.user_level_id.SelectOptionListHtml("x_user_level_id"))
+    </select>
+    @Html.Raw(usersAdd.user_level_id.GetCustomMessage)
+    <div class="invalid-feedback">@Html.Raw(usersAdd.user_level_id.GetErrorMessage())</div>
+@Html.Raw(usersAdd.user_level_id.Lookup.GetParamTag(usersAdd, "p_x_user_level_id"))
+<script>
+loadjs.ready("fusersadd", function() {
+    var options = { name: "x_user_level_id", selectId: "fusersadd_x_user_level_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fusersadd.lists.user_level_id?.lookupOptions.length) {
+        options.data = { id: "x_user_level_id", form: "fusersadd" };
+    } else {
+        options.ajax = { id: "x_user_level_id", form: "fusersadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.users.fields.user_level_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+</span>
+}
+</div></div>
+    </div>
+} @* usersAdd.user_level_id.Visible (end) *@
+</div><!-- /page* -->
+@{ usersAdd.CloseRecordset(); }
+@Html.Raw(usersAdd.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(usersAdd.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fusersadd">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fusersadd" data-href="@AppPath(usersAdd.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(usersAdd.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@usersAdd.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("users");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

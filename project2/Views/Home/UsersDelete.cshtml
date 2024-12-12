@@ -1,0 +1,141 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (usersDelete.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = usersDelete.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(usersDelete.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { users: currentTable } });
+var currentPageID = ew.PAGE_ID = "delete";
+var currentForm;
+var fusersdelete;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fusersdelete")
+        .setPageId("delete")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@usersDelete.ShowPageHeader()
+@usersDelete.ShowMessages()
+<form name="fusersdelete" id="fusersdelete" class="ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in usersDelete.RecordKeys) {
+<input type="hidden" name="key_m[]" value="@key">
+}
+<div class="card ew-card ew-grid @(usersDelete.TableGridClass)">
+<div class="card-body ew-grid-middle-panel @(usersDelete.TableContainerClass)" style="@(usersDelete.TableContainerStyle)">
+<table class="@(usersDelete.TableClass)">
+    <thead>
+    <tr class="ew-table-header">
+@if (usersDelete.user_id.Visible) { // usersDelete.user_id.Visible (begin)
+        <th class="@Html.Raw(usersDelete.user_id.HeaderCellClass)"><span id="elh_users_user_id" class="users_user_id">@Html.Raw(usersDelete.user_id.Caption)</span></th>
+} @* usersDelete.user_id.Visible (end) *@
+@if (usersDelete._username.Visible) { // usersDelete._username.Visible (begin)
+        <th class="@Html.Raw(usersDelete._username.HeaderCellClass)"><span id="elh_users__username" class="users__username">@Html.Raw(usersDelete._username.Caption)</span></th>
+} @* usersDelete._username.Visible (end) *@
+@if (usersDelete.password.Visible) { // usersDelete.password.Visible (begin)
+        <th class="@Html.Raw(usersDelete.password.HeaderCellClass)"><span id="elh_users_password" class="users_password">@Html.Raw(usersDelete.password.Caption)</span></th>
+} @* usersDelete.password.Visible (end) *@
+@if (usersDelete._email.Visible) { // usersDelete._email.Visible (begin)
+        <th class="@Html.Raw(usersDelete._email.HeaderCellClass)"><span id="elh_users__email" class="users__email">@Html.Raw(usersDelete._email.Caption)</span></th>
+} @* usersDelete._email.Visible (end) *@
+@if (usersDelete.user_level_id.Visible) { // usersDelete.user_level_id.Visible (begin)
+        <th class="@Html.Raw(usersDelete.user_level_id.HeaderCellClass)"><span id="elh_users_user_level_id" class="users_user_level_id">@Html.Raw(usersDelete.user_level_id.Caption)</span></th>
+} @* usersDelete.user_level_id.Visible (end) *@
+    </tr>
+    </thead>
+    <tbody>
+@{ usersDelete.RecordCount = 0; }
+@while (usersDelete.Recordset != null && await usersDelete.Recordset.ReadAsync()) { // DN
+    usersDelete.RecordCount++;
+    usersDelete.RowCount++;
+
+    // Set row properties
+    usersDelete.ResetAttributes();
+    usersDelete.RowType = RowType.View; // View
+
+    // Get the field contents
+    await usersDelete.LoadRowValues(usersDelete.Recordset);
+
+    // Render row
+    await usersDelete.RenderRow();
+    <tr @Html.Raw(usersDelete.RowAttributes)>
+@if (usersDelete.user_id.Visible) { // usersDelete.user_id.Visible (begin)
+        <td @Html.Raw(usersDelete.user_id.CellAttributes)>
+<span id="">
+<span @Html.Raw(usersDelete.user_id.ViewAttributes)>
+@Html.Raw(usersDelete.user_id.GetViewValue())</span>
+</span></td>
+} @* usersDelete.user_id.Visible (end) *@
+@if (usersDelete._username.Visible) { // usersDelete._username.Visible (begin)
+        <td @Html.Raw(usersDelete._username.CellAttributes)>
+<span id="">
+<span @Html.Raw(usersDelete._username.ViewAttributes)>
+@Html.Raw(usersDelete._username.GetViewValue())</span>
+</span></td>
+} @* usersDelete._username.Visible (end) *@
+@if (usersDelete.password.Visible) { // usersDelete.password.Visible (begin)
+        <td @Html.Raw(usersDelete.password.CellAttributes)>
+<span id="">
+<span @Html.Raw(usersDelete.password.ViewAttributes)>
+@Html.Raw(usersDelete.password.GetViewValue())</span>
+</span></td>
+} @* usersDelete.password.Visible (end) *@
+@if (usersDelete._email.Visible) { // usersDelete._email.Visible (begin)
+        <td @Html.Raw(usersDelete._email.CellAttributes)>
+<span id="">
+<span @Html.Raw(usersDelete._email.ViewAttributes)>
+@Html.Raw(usersDelete._email.GetViewValue())</span>
+</span></td>
+} @* usersDelete._email.Visible (end) *@
+@if (usersDelete.user_level_id.Visible) { // usersDelete.user_level_id.Visible (begin)
+        <td @Html.Raw(usersDelete.user_level_id.CellAttributes)>
+<span id="">
+<span @Html.Raw(usersDelete.user_level_id.ViewAttributes)>
+@Html.Raw(usersDelete.user_level_id.GetViewValue())</span>
+</span></td>
+} @* usersDelete.user_level_id.Visible (end) *@
+    </tr>
+}
+@{ usersDelete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div class="ew-buttons ew-desktop-buttons">
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(usersDelete.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+</div>
+</form>
+@usersDelete.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

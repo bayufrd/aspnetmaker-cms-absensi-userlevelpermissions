@@ -1,0 +1,89 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelsView.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelsView.UseLayout ? "_Layout" : "";
+}
+@if (!userlevelsView.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @userlevelsView.ExportOptions.RenderBody()
+    @userlevelsView.OtherOptions.RenderBody()
+</div>
+}
+@userlevelsView.ShowPageHeader()
+@userlevelsView.ShowMessages()
+<main class="view">
+<form name="fuserlevelsview" id="fuserlevelsview" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!userlevelsView.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelsView.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevels: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fuserlevelsview;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelsview")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(userlevelsView.IsModal)">
+<table class="@(userlevelsView.TableClass)">
+@if (userlevelsView.UserLevelID.Visible) { // userlevelsView.UserLevelID.Visible (begin)
+    <tr id="r_UserLevelID" @Html.Raw(userlevelsView.UserLevelID.RowAttributes)>
+        <td class="@(userlevelsView.TableLeftColumnClass)"><span id="elh_userlevels_UserLevelID">@Html.Raw(userlevelsView.UserLevelID.Caption)</span></td>
+        <td data-name="UserLevelID" @Html.Raw(userlevelsView.UserLevelID.CellAttributes)>
+<span id="el_userlevels_UserLevelID">
+<span @Html.Raw(userlevelsView.UserLevelID.ViewAttributes)>
+@Html.Raw(userlevelsView.UserLevelID.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* userlevelsView.UserLevelID.Visible (end) *@
+@if (userlevelsView.UserLevelName.Visible) { // userlevelsView.UserLevelName.Visible (begin)
+    <tr id="r_UserLevelName" @Html.Raw(userlevelsView.UserLevelName.RowAttributes)>
+        <td class="@(userlevelsView.TableLeftColumnClass)"><span id="elh_userlevels_UserLevelName">@Html.Raw(userlevelsView.UserLevelName.Caption)</span></td>
+        <td data-name="UserLevelName" @Html.Raw(userlevelsView.UserLevelName.CellAttributes)>
+<span id="el_userlevels_UserLevelName">
+<span @Html.Raw(userlevelsView.UserLevelName.ViewAttributes)>
+@Html.Raw(userlevelsView.UserLevelName.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* userlevelsView.UserLevelName.Visible (end) *@
+</table>
+@{ userlevelsView.CloseRecordset(); }
+</form>
+</main>
+@userlevelsView.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!userlevelsView.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

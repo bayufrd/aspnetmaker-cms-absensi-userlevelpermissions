@@ -1,0 +1,290 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (absensiAdd.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = absensiAdd.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(absensiAdd.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { absensi: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fabsensiadd;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fabsensiadd")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null, ew.Validators.integer], fields.user_id.isInvalid],
+            ["tanggal", [fields.tanggal.visible && fields.tanggal.required ? ew.Validators.required(fields.tanggal.caption) : null, ew.Validators.datetime(fields.tanggal.clientFormatPattern)], fields.tanggal.isInvalid],
+            ["jam_masuk", [fields.jam_masuk.visible && fields.jam_masuk.required ? ew.Validators.required(fields.jam_masuk.caption) : null, ew.Validators.datetime(fields.jam_masuk.clientFormatPattern)], fields.jam_masuk.isInvalid],
+            ["jam_keluar", [fields.jam_keluar.visible && fields.jam_keluar.required ? ew.Validators.required(fields.jam_keluar.caption) : null, ew.Validators.datetime(fields.jam_keluar.clientFormatPattern)], fields.jam_keluar.isInvalid],
+            ["status", [fields.status.visible && fields.status.required ? ew.Validators.required(fields.status.caption) : null], fields.status.isInvalid],
+            ["lokasi", [fields.lokasi.visible && fields.lokasi.required ? ew.Validators.required(fields.lokasi.caption) : null], fields.lokasi.isInvalid],
+            ["foto_verifikasi", [fields.foto_verifikasi.visible && fields.foto_verifikasi.required ? ew.Validators.required(fields.foto_verifikasi.caption) : null], fields.foto_verifikasi.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+            "status": @Html.Raw(absensiAdd.status.ToClientList(absensiAdd)),
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@absensiAdd.ShowPageHeader()
+@absensiAdd.ShowMessages()
+<form name="fabsensiadd" id="fabsensiadd" class="@(absensiAdd.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(absensiAdd.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(absensiAdd.OldKeyName)" value="@Html.Raw(absensiAdd.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (absensiAdd.user_id.Visible) { // absensiAdd.user_id.Visible (begin)
+    <div id="r_user_id" @Html.Raw(absensiAdd.user_id.RowAttributes)>
+        <label id="elh_absensi_user_id" for="x_user_id" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.user_id.Caption)@Html.Raw(absensiAdd.user_id.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.user_id.CellAttributes)>
+<span id="el_absensi_user_id">
+<input type="@(absensiAdd.user_id.InputTextType)" name="x_user_id" id="x_user_id" data-table="absensi" data-field="x_user_id" value="@Html.Raw(absensiAdd.user_id.EditValue)" size="30" placeholder="@Html.Raw(HtmlEncode(absensiAdd.user_id.PlaceHolder))" data-format-pattern="@(absensiAdd.user_id.FormatPattern)"@Html.Raw(absensiAdd.user_id.EditAttributes) aria-describedby="x_user_id_help">
+@Html.Raw(absensiAdd.user_id.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.user_id.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.user_id.Visible (end) *@
+@if (absensiAdd.tanggal.Visible) { // absensiAdd.tanggal.Visible (begin)
+    <div id="r_tanggal" @Html.Raw(absensiAdd.tanggal.RowAttributes)>
+        <label id="elh_absensi_tanggal" for="x_tanggal" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.tanggal.Caption)@Html.Raw(absensiAdd.tanggal.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.tanggal.CellAttributes)>
+<span id="el_absensi_tanggal">
+<input type="@(absensiAdd.tanggal.InputTextType)" name="x_tanggal" id="x_tanggal" data-table="absensi" data-field="x_tanggal" value="@Html.Raw(absensiAdd.tanggal.EditValue)" placeholder="@Html.Raw(HtmlEncode(absensiAdd.tanggal.PlaceHolder))" data-format-pattern="@(absensiAdd.tanggal.FormatPattern)"@Html.Raw(absensiAdd.tanggal.EditAttributes) aria-describedby="x_tanggal_help">
+@Html.Raw(absensiAdd.tanggal.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.tanggal.GetErrorMessage())</div>
+@if (!absensiAdd.tanggal.ReadOnly && !absensiAdd.tanggal.Disabled && !absensiAdd.tanggal.EditAttrs.Is("readonly") && !absensiAdd.tanggal.EditAttrs.Is("disabled")) {
+<script>
+loadjs.ready(["fabsensiadd", "datetimepicker"], function () {
+    let format = "@Html.Raw(DateFormat(0))", // DN
+        options = {
+                localization: {
+                    locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
+                    hourCycle: format.match(/H/) ? "h24" : "h12",
+                    format,
+                    ...ew.language.phrase("datetimepicker")
+                },
+                display: {
+                    icons: {
+                        previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
+                        next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+                    },
+                    components: {
+                        clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
+                        hours: !!format.match(/h/i),
+                        minutes: !!format.match(/m/),
+                        seconds: !!format.match(/s/i)
+                    },
+                theme: ew.getPreferredTheme()
+                }
+            };
+    ew.createDateTimePicker("fabsensiadd", "x_tanggal", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
+});
+</script>
+}
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.tanggal.Visible (end) *@
+@if (absensiAdd.jam_masuk.Visible) { // absensiAdd.jam_masuk.Visible (begin)
+    <div id="r_jam_masuk" @Html.Raw(absensiAdd.jam_masuk.RowAttributes)>
+        <label id="elh_absensi_jam_masuk" for="x_jam_masuk" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.jam_masuk.Caption)@Html.Raw(absensiAdd.jam_masuk.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.jam_masuk.CellAttributes)>
+<span id="el_absensi_jam_masuk">
+<input type="@(absensiAdd.jam_masuk.InputTextType)" name="x_jam_masuk" id="x_jam_masuk" data-table="absensi" data-field="x_jam_masuk" value="@Html.Raw(absensiAdd.jam_masuk.EditValue)" placeholder="@Html.Raw(HtmlEncode(absensiAdd.jam_masuk.PlaceHolder))" data-format-pattern="@(absensiAdd.jam_masuk.FormatPattern)"@Html.Raw(absensiAdd.jam_masuk.EditAttributes) aria-describedby="x_jam_masuk_help">
+@Html.Raw(absensiAdd.jam_masuk.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.jam_masuk.GetErrorMessage())</div>
+@if (!absensiAdd.jam_masuk.ReadOnly && !absensiAdd.jam_masuk.Disabled && !absensiAdd.jam_masuk.EditAttrs.Is("readonly") && !absensiAdd.jam_masuk.EditAttrs.Is("disabled")) {
+<script>
+loadjs.ready(["fabsensiadd", "datetimepicker"], function () {
+    let format = "@Html.Raw(DateFormat(0))", // DN
+        options = {
+                localization: {
+                    locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
+                    hourCycle: format.match(/H/) ? "h24" : "h12",
+                    format,
+                    ...ew.language.phrase("datetimepicker")
+                },
+                display: {
+                    icons: {
+                        previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
+                        next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+                    },
+                    components: {
+                        clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
+                        hours: !!format.match(/h/i),
+                        minutes: !!format.match(/m/),
+                        seconds: !!format.match(/s/i)
+                    },
+                theme: ew.getPreferredTheme()
+                }
+            };
+    ew.createDateTimePicker("fabsensiadd", "x_jam_masuk", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
+});
+</script>
+}
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.jam_masuk.Visible (end) *@
+@if (absensiAdd.jam_keluar.Visible) { // absensiAdd.jam_keluar.Visible (begin)
+    <div id="r_jam_keluar" @Html.Raw(absensiAdd.jam_keluar.RowAttributes)>
+        <label id="elh_absensi_jam_keluar" for="x_jam_keluar" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.jam_keluar.Caption)@Html.Raw(absensiAdd.jam_keluar.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.jam_keluar.CellAttributes)>
+<span id="el_absensi_jam_keluar">
+<input type="@(absensiAdd.jam_keluar.InputTextType)" name="x_jam_keluar" id="x_jam_keluar" data-table="absensi" data-field="x_jam_keluar" value="@Html.Raw(absensiAdd.jam_keluar.EditValue)" placeholder="@Html.Raw(HtmlEncode(absensiAdd.jam_keluar.PlaceHolder))" data-format-pattern="@(absensiAdd.jam_keluar.FormatPattern)"@Html.Raw(absensiAdd.jam_keluar.EditAttributes) aria-describedby="x_jam_keluar_help">
+@Html.Raw(absensiAdd.jam_keluar.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.jam_keluar.GetErrorMessage())</div>
+@if (!absensiAdd.jam_keluar.ReadOnly && !absensiAdd.jam_keluar.Disabled && !absensiAdd.jam_keluar.EditAttrs.Is("readonly") && !absensiAdd.jam_keluar.EditAttrs.Is("disabled")) {
+<script>
+loadjs.ready(["fabsensiadd", "datetimepicker"], function () {
+    let format = "@Html.Raw(DateFormat(0))", // DN
+        options = {
+                localization: {
+                    locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
+                    hourCycle: format.match(/H/) ? "h24" : "h12",
+                    format,
+                    ...ew.language.phrase("datetimepicker")
+                },
+                display: {
+                    icons: {
+                        previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
+                        next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+                    },
+                    components: {
+                        clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
+                        hours: !!format.match(/h/i),
+                        minutes: !!format.match(/m/),
+                        seconds: !!format.match(/s/i)
+                    },
+                theme: ew.getPreferredTheme()
+                }
+            };
+    ew.createDateTimePicker("fabsensiadd", "x_jam_keluar", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
+});
+</script>
+}
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.jam_keluar.Visible (end) *@
+@if (absensiAdd.status.Visible) { // absensiAdd.status.Visible (begin)
+    <div id="r_status" @Html.Raw(absensiAdd.status.RowAttributes)>
+        <label id="elh_absensi_status" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.status.Caption)@Html.Raw(absensiAdd.status.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.status.CellAttributes)>
+<span id="el_absensi_status">
+<span>@{
+    if (IsRTL) {
+        absensiAdd.status.EditAttrs["dir"] = "rtl";
+    }
+}</span>
+<span id="as_x_status" class="ew-auto-suggest">
+    <input type="text" class="form-control" name="sv_x_status" id="sv_x_status" value="@(RemoveHtml(ConvertToString(absensiAdd.status.EditValue)))" autocomplete="off" size="30" maxlength="3" placeholder="@Html.Raw(HtmlEncode(absensiAdd.status.PlaceHolder))" data-placeholder="@Html.Raw(HtmlEncode(absensiAdd.status.PlaceHolder))" data-format-pattern="@(absensiAdd.status.FormatPattern)" @Html.Raw(absensiAdd.status.EditAttributes) aria-describedby="x_status_help">
+</span>
+<selection-list hidden class="form-control" data-table="absensi" data-field="x_status" data-input="sv_x_status" data-value-separator="@(absensiAdd.status.DisplayValueSeparatorAttribute)" name="x_status" id="x_status" value="@(HtmlEncode(absensiAdd.status.CurrentValue))"></selection-list>
+@Html.Raw(absensiAdd.status.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.status.GetErrorMessage())</div>
+<script>
+loadjs.ready(["fabsensiadd"], function() {
+    fabsensiadd.createAutoSuggest(Object.assign({"id":"x_status","forceSelect":false}, { lookupAllDisplayFields: @(absensiAdd.status.Lookup.LookupAllDisplayFields ? "true" : "false") }, ew.vars.tables.absensi.fields.status.autoSuggestOptions));
+});
+</script>
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.status.Visible (end) *@
+@if (absensiAdd.lokasi.Visible) { // absensiAdd.lokasi.Visible (begin)
+    <div id="r_lokasi" @Html.Raw(absensiAdd.lokasi.RowAttributes)>
+        <label id="elh_absensi_lokasi" for="x_lokasi" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.lokasi.Caption)@Html.Raw(absensiAdd.lokasi.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.lokasi.CellAttributes)>
+<span id="el_absensi_lokasi">
+<input type="@(absensiAdd.lokasi.InputTextType)" name="x_lokasi" id="x_lokasi" data-table="absensi" data-field="x_lokasi" value="@Html.Raw(absensiAdd.lokasi.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(absensiAdd.lokasi.PlaceHolder))" data-format-pattern="@(absensiAdd.lokasi.FormatPattern)"@Html.Raw(absensiAdd.lokasi.EditAttributes) aria-describedby="x_lokasi_help">
+@Html.Raw(absensiAdd.lokasi.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.lokasi.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.lokasi.Visible (end) *@
+@if (absensiAdd.foto_verifikasi.Visible) { // absensiAdd.foto_verifikasi.Visible (begin)
+    <div id="r_foto_verifikasi" @Html.Raw(absensiAdd.foto_verifikasi.RowAttributes)>
+        <label id="elh_absensi_foto_verifikasi" for="x_foto_verifikasi" class="@(absensiAdd.LeftColumnClass)">@Html.Raw(absensiAdd.foto_verifikasi.Caption)@Html.Raw(absensiAdd.foto_verifikasi.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(absensiAdd.RightColumnClass)"><div @Html.Raw(absensiAdd.foto_verifikasi.CellAttributes)>
+<span id="el_absensi_foto_verifikasi">
+<input type="@(absensiAdd.foto_verifikasi.InputTextType)" name="x_foto_verifikasi" id="x_foto_verifikasi" data-table="absensi" data-field="x_foto_verifikasi" value="@Html.Raw(absensiAdd.foto_verifikasi.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(absensiAdd.foto_verifikasi.PlaceHolder))" data-format-pattern="@(absensiAdd.foto_verifikasi.FormatPattern)"@Html.Raw(absensiAdd.foto_verifikasi.EditAttributes) aria-describedby="x_foto_verifikasi_help">
+@Html.Raw(absensiAdd.foto_verifikasi.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(absensiAdd.foto_verifikasi.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* absensiAdd.foto_verifikasi.Visible (end) *@
+</div><!-- /page* -->
+@{ absensiAdd.CloseRecordset(); }
+@Html.Raw(absensiAdd.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(absensiAdd.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fabsensiadd">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fabsensiadd" data-href="@AppPath(absensiAdd.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(absensiAdd.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@absensiAdd.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("absensi");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

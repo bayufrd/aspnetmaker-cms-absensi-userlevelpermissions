@@ -1,0 +1,273 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (user2List.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = user2List.UseLayout ? "_Layout" : "";
+}
+@if (!user2List.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(user2List.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { user2: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(user2List.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(user2List.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(user2List.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(user2List.FormKeyCountName)")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!user2List.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (user2List.TotalRecords > 0 && user2List.ExportOptions.Visible) {
+    user2List.ExportOptions.Render("body");
+}
+@if (user2List.ImportOptions.Visible) {
+    user2List.ImportOptions.Render("body");
+}
+@if (user2List.SearchOptions.Visible) {
+    user2List.SearchOptions.Render("body");
+}
+@if (user2List.FilterOptions.Visible) {
+    user2List.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!user2List.IsModal) {
+<form name="fuser2srch" id="fuser2srch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fuser2srch_search_panel" class="mb-2 mb-sm-0 @(user2List.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(user2List.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { user2: currentTable } });
+var currentForm;
+var fuser2srch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fuser2srch")
+        .setPageId("list")
+@if (user2List.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(user2List.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (Security.CanSearch) {
+if (!user2List.IsExport() && Empty(user2List.CurrentAction) && user2List.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(user2List.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(user2List.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(user2List.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(user2List.BasicSearch.SessionType == "" ? " active" : "")" form="fuser2srch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(user2List.BasicSearch.SessionType == "=" ? " active" : "")" form="fuser2srch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(user2List.BasicSearch.SessionType == "AND" ? " active" : "")" form="fuser2srch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(user2List.BasicSearch.SessionType == "OR" ? " active" : "")" form="fuser2srch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+}
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@user2List.ShowPageHeader()
+@user2List.ShowMessages()
+<main class="list @(user2List.TotalRecords == 0 && !user2List.IsAdd ? " ew-no-record" : "")">
+<div id="ew-header-options">
+    @user2List.HeaderOptions.RenderBody()
+</div>
+<div id="ew-list">
+@if (user2List.TotalRecords > 0 || !Empty(user2List.CurrentAction)) {
+<div class="card ew-card ew-grid@(user2List.IsAddOrEdit ? " ew-grid-add-edit" : "") @(user2List.TableGridClass)">
+<form name="@(user2List.FormName)" id="@(user2List.FormName)" class="ew-form ew-list-form" action="@AppPath(user2List.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (user2List.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_user2" class="card-body ew-grid-middle-panel @(user2List.TableContainerClass)" style="@(user2List.TableContainerStyle)">
+@if (user2List.TotalRecords > 0 || user2List.IsGridEdit || user2List.IsMultiEdit) {
+<table id="tbl_user2list" class="@(user2List.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    user2List.RowType = RowType.Header;
+
+    // Render list options
+    await user2List.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@user2List.ListOptions.RenderHeader("left")
+@if (user2List.id.Visible) { // user2List.id.Visible (begin)
+        <th data-name="id" class="@(user2List.id.HeaderCellClass)"><div id="elh_user2_id" class="user2_id">@Html.Raw(user2List.RenderFieldHeader(user2List.id))</div></th>
+} @* user2List.id.Visible (end) *@
+@if (user2List._username.Visible) { // user2List._username.Visible (begin)
+        <th data-name="_username" class="@(user2List._username.HeaderCellClass)"><div id="elh_user2__username" class="user2__username">@Html.Raw(user2List.RenderFieldHeader(user2List._username))</div></th>
+} @* user2List._username.Visible (end) *@
+@if (user2List.password.Visible) { // user2List.password.Visible (begin)
+        <th data-name="password" class="@(user2List.password.HeaderCellClass)"><div id="elh_user2_password" class="user2_password">@Html.Raw(user2List.RenderFieldHeader(user2List.password))</div></th>
+} @* user2List.password.Visible (end) *@
+@if (user2List._userlevel.Visible) { // user2List._userlevel.Visible (begin)
+        <th data-name="_userlevel" class="@(user2List._userlevel.HeaderCellClass)"><div id="elh_user2__userlevel" class="user2__userlevel">@Html.Raw(user2List.RenderFieldHeader(user2List._userlevel))</div></th>
+} @* user2List._userlevel.Visible (end) *@
+@* Render list options (header, right) *@
+@user2List.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(user2List.PageNumber)">
+@{
+    await user2List.SetupGrid();
+    bool eof = user2List.Recordset == null; // DN
+}
+@while (user2List.RecordCount < user2List.StopRecord || SameString(user2List.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(user2List.RowIndex, "$rowindex$") &&
+        (!user2List.IsGridAdd || user2List.CurrentMode == "copy") &&
+        (!((user2List.IsCopy || user2List.IsAdd) && user2List.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await user2List.Recordset.ReadAsync();
+    user2List.RecordCount++;
+    if (user2List.RecordCount >= user2List.StartRecord) {
+        await user2List.SetupRow();
+    <tr @Html.Raw(user2List.RowAttributes)>
+    @* Render list options (body, left) *@
+    @user2List.ListOptions.RenderBody("left", user2List.RowCount)
+    @if (user2List.id.Visible) { // user2List.id.Visible (begin)
+        <td data-name="id" @Html.Raw(user2List.id.CellAttributes)>
+<span id="el@(user2List.RowIndex == "$rowindex$" ? "$rowindex$" : user2List.RowCount)_user2_id" class="el_user2_id">
+<span @Html.Raw(user2List.id.ViewAttributes)>
+@Html.Raw(user2List.id.GetViewValue())</span>
+</span>
+</td>
+    } @* user2List.id.Visible (end) *@
+    @if (user2List._username.Visible) { // user2List._username.Visible (begin)
+        <td data-name="_username" @Html.Raw(user2List._username.CellAttributes)>
+<span id="el@(user2List.RowIndex == "$rowindex$" ? "$rowindex$" : user2List.RowCount)_user2__username" class="el_user2__username">
+<span @Html.Raw(user2List._username.ViewAttributes)>
+@Html.Raw(user2List._username.GetViewValue())</span>
+</span>
+</td>
+    } @* user2List._username.Visible (end) *@
+    @if (user2List.password.Visible) { // user2List.password.Visible (begin)
+        <td data-name="password" @Html.Raw(user2List.password.CellAttributes)>
+<span id="el@(user2List.RowIndex == "$rowindex$" ? "$rowindex$" : user2List.RowCount)_user2_password" class="el_user2_password">
+<span @Html.Raw(user2List.password.ViewAttributes)>
+@Html.Raw(user2List.password.GetViewValue())</span>
+</span>
+</td>
+    } @* user2List.password.Visible (end) *@
+    @if (user2List._userlevel.Visible) { // user2List._userlevel.Visible (begin)
+        <td data-name="_userlevel" @Html.Raw(user2List._userlevel.CellAttributes)>
+<span id="el@(user2List.RowIndex == "$rowindex$" ? "$rowindex$" : user2List.RowCount)_user2__userlevel" class="el_user2__userlevel">
+<span @Html.Raw(user2List._userlevel.ViewAttributes)>
+@Html.Raw(user2List._userlevel.GetViewValue())</span>
+</span>
+</td>
+    } @* user2List._userlevel.Visible (end) *@
+    @* Render list options (body, right) *@
+    @user2List.ListOptions.RenderBody("right", user2List.RowCount)
+    </tr>
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(user2List.RowIndex, "$rowindex$"))
+        user2List.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((user2List.IsCopy || user2List.IsAdd) && user2List.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        user2List.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(user2List.CurrentAction) && !user2List.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ user2List.CloseRecordset(); }
+@if (!user2List.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!user2List.IsGridAdd && !(user2List.IsGridEdit && user2List.ModalGridEdit) && !user2List.IsMultiEdit) {
+@Html.Raw(user2List.Pager.Render())
+}
+<div class="ew-list-other-options">
+@user2List.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@user2List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+</div>
+<div id="ew-footer-options">
+    @user2List.FooterOptions.RenderBody()
+</div>
+</main>
+@user2List.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!user2List.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("user2");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

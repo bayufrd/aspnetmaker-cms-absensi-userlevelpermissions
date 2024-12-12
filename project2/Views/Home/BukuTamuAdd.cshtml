@@ -1,0 +1,192 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (bukuTamuAdd.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = bukuTamuAdd.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuAdd.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fbuku_tamuadd;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fbuku_tamuadd")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["nama", [fields.nama.visible && fields.nama.required ? ew.Validators.required(fields.nama.caption) : null], fields.nama.isInvalid],
+            ["umur", [fields.umur.visible && fields.umur.required ? ew.Validators.required(fields.umur.caption) : null, ew.Validators.integer], fields.umur.isInvalid],
+            ["tanggal_kunjungan", [fields.tanggal_kunjungan.visible && fields.tanggal_kunjungan.required ? ew.Validators.required(fields.tanggal_kunjungan.caption) : null, ew.Validators.datetime(fields.tanggal_kunjungan.clientFormatPattern)], fields.tanggal_kunjungan.isInvalid],
+            ["tujuan", [fields.tujuan.visible && fields.tujuan.required ? ew.Validators.required(fields.tujuan.caption) : null], fields.tujuan.isInvalid],
+            ["komentar", [fields.komentar.visible && fields.komentar.required ? ew.Validators.required(fields.komentar.caption) : null], fields.komentar.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@bukuTamuAdd.ShowPageHeader()
+@bukuTamuAdd.ShowMessages()
+<form name="fbuku_tamuadd" id="fbuku_tamuadd" class="@(bukuTamuAdd.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(bukuTamuAdd.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(bukuTamuAdd.OldKeyName)" value="@Html.Raw(bukuTamuAdd.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (bukuTamuAdd.nama.Visible) { // bukuTamuAdd.nama.Visible (begin)
+    <div id="r_nama" @Html.Raw(bukuTamuAdd.nama.RowAttributes)>
+        <label id="elh_buku_tamu_nama" for="x_nama" class="@(bukuTamuAdd.LeftColumnClass)">@Html.Raw(bukuTamuAdd.nama.Caption)@Html.Raw(bukuTamuAdd.nama.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuAdd.RightColumnClass)"><div @Html.Raw(bukuTamuAdd.nama.CellAttributes)>
+<span id="el_buku_tamu_nama">
+<input type="@(bukuTamuAdd.nama.InputTextType)" name="x_nama" id="x_nama" data-table="buku_tamu" data-field="x_nama" value="@Html.Raw(bukuTamuAdd.nama.EditValue)" size="30" maxlength="256" placeholder="@Html.Raw(HtmlEncode(bukuTamuAdd.nama.PlaceHolder))" data-format-pattern="@(bukuTamuAdd.nama.FormatPattern)"@Html.Raw(bukuTamuAdd.nama.EditAttributes) aria-describedby="x_nama_help">
+@Html.Raw(bukuTamuAdd.nama.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuAdd.nama.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuAdd.nama.Visible (end) *@
+@if (bukuTamuAdd.umur.Visible) { // bukuTamuAdd.umur.Visible (begin)
+    <div id="r_umur" @Html.Raw(bukuTamuAdd.umur.RowAttributes)>
+        <label id="elh_buku_tamu_umur" for="x_umur" class="@(bukuTamuAdd.LeftColumnClass)">@Html.Raw(bukuTamuAdd.umur.Caption)@Html.Raw(bukuTamuAdd.umur.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuAdd.RightColumnClass)"><div @Html.Raw(bukuTamuAdd.umur.CellAttributes)>
+<span id="el_buku_tamu_umur">
+<input type="@(bukuTamuAdd.umur.InputTextType)" name="x_umur" id="x_umur" data-table="buku_tamu" data-field="x_umur" value="@Html.Raw(bukuTamuAdd.umur.EditValue)" size="30" placeholder="@Html.Raw(HtmlEncode(bukuTamuAdd.umur.PlaceHolder))" data-format-pattern="@(bukuTamuAdd.umur.FormatPattern)"@Html.Raw(bukuTamuAdd.umur.EditAttributes) aria-describedby="x_umur_help">
+@Html.Raw(bukuTamuAdd.umur.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuAdd.umur.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuAdd.umur.Visible (end) *@
+@if (bukuTamuAdd.tanggal_kunjungan.Visible) { // bukuTamuAdd.tanggal_kunjungan.Visible (begin)
+    <div id="r_tanggal_kunjungan" @Html.Raw(bukuTamuAdd.tanggal_kunjungan.RowAttributes)>
+        <label id="elh_buku_tamu_tanggal_kunjungan" for="x_tanggal_kunjungan" class="@(bukuTamuAdd.LeftColumnClass)">@Html.Raw(bukuTamuAdd.tanggal_kunjungan.Caption)@Html.Raw(bukuTamuAdd.tanggal_kunjungan.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuAdd.RightColumnClass)"><div @Html.Raw(bukuTamuAdd.tanggal_kunjungan.CellAttributes)>
+<span id="el_buku_tamu_tanggal_kunjungan">
+<input type="@(bukuTamuAdd.tanggal_kunjungan.InputTextType)" name="x_tanggal_kunjungan" id="x_tanggal_kunjungan" data-table="buku_tamu" data-field="x_tanggal_kunjungan" value="@Html.Raw(bukuTamuAdd.tanggal_kunjungan.EditValue)" placeholder="@Html.Raw(HtmlEncode(bukuTamuAdd.tanggal_kunjungan.PlaceHolder))" data-format-pattern="@(bukuTamuAdd.tanggal_kunjungan.FormatPattern)"@Html.Raw(bukuTamuAdd.tanggal_kunjungan.EditAttributes) aria-describedby="x_tanggal_kunjungan_help">
+@Html.Raw(bukuTamuAdd.tanggal_kunjungan.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuAdd.tanggal_kunjungan.GetErrorMessage())</div>
+@if (!bukuTamuAdd.tanggal_kunjungan.ReadOnly && !bukuTamuAdd.tanggal_kunjungan.Disabled && !bukuTamuAdd.tanggal_kunjungan.EditAttrs.Is("readonly") && !bukuTamuAdd.tanggal_kunjungan.EditAttrs.Is("disabled")) {
+<script>
+loadjs.ready(["fbuku_tamuadd", "datetimepicker"], function () {
+    let format = "@Html.Raw(DateFormat(0))", // DN
+        options = {
+                localization: {
+                    locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
+                    hourCycle: format.match(/H/) ? "h24" : "h12",
+                    format,
+                    ...ew.language.phrase("datetimepicker")
+                },
+                display: {
+                    icons: {
+                        previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
+                        next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+                    },
+                    components: {
+                        clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
+                        hours: !!format.match(/h/i),
+                        minutes: !!format.match(/m/),
+                        seconds: !!format.match(/s/i)
+                    },
+                theme: ew.getPreferredTheme()
+                }
+            };
+    ew.createDateTimePicker("fbuku_tamuadd", "x_tanggal_kunjungan", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
+});
+</script>
+}
+</span>
+</div></div>
+    </div>
+} @* bukuTamuAdd.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuAdd.tujuan.Visible) { // bukuTamuAdd.tujuan.Visible (begin)
+    <div id="r_tujuan" @Html.Raw(bukuTamuAdd.tujuan.RowAttributes)>
+        <label id="elh_buku_tamu_tujuan" for="x_tujuan" class="@(bukuTamuAdd.LeftColumnClass)">@Html.Raw(bukuTamuAdd.tujuan.Caption)@Html.Raw(bukuTamuAdd.tujuan.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuAdd.RightColumnClass)"><div @Html.Raw(bukuTamuAdd.tujuan.CellAttributes)>
+<span id="el_buku_tamu_tujuan">
+<input type="@(bukuTamuAdd.tujuan.InputTextType)" name="x_tujuan" id="x_tujuan" data-table="buku_tamu" data-field="x_tujuan" value="@Html.Raw(bukuTamuAdd.tujuan.EditValue)" size="30" maxlength="65535" placeholder="@Html.Raw(HtmlEncode(bukuTamuAdd.tujuan.PlaceHolder))" data-format-pattern="@(bukuTamuAdd.tujuan.FormatPattern)"@Html.Raw(bukuTamuAdd.tujuan.EditAttributes) aria-describedby="x_tujuan_help">
+@Html.Raw(bukuTamuAdd.tujuan.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuAdd.tujuan.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuAdd.tujuan.Visible (end) *@
+@if (bukuTamuAdd.komentar.Visible) { // bukuTamuAdd.komentar.Visible (begin)
+    <div id="r_komentar" @Html.Raw(bukuTamuAdd.komentar.RowAttributes)>
+        <label id="elh_buku_tamu_komentar" for="x_komentar" class="@(bukuTamuAdd.LeftColumnClass)">@Html.Raw(bukuTamuAdd.komentar.Caption)@Html.Raw(bukuTamuAdd.komentar.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuAdd.RightColumnClass)"><div @Html.Raw(bukuTamuAdd.komentar.CellAttributes)>
+<span id="el_buku_tamu_komentar">
+<input type="@(bukuTamuAdd.komentar.InputTextType)" name="x_komentar" id="x_komentar" data-table="buku_tamu" data-field="x_komentar" value="@Html.Raw(bukuTamuAdd.komentar.EditValue)" size="30" maxlength="65535" placeholder="@Html.Raw(HtmlEncode(bukuTamuAdd.komentar.PlaceHolder))" data-format-pattern="@(bukuTamuAdd.komentar.FormatPattern)"@Html.Raw(bukuTamuAdd.komentar.EditAttributes) aria-describedby="x_komentar_help">
+@Html.Raw(bukuTamuAdd.komentar.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuAdd.komentar.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuAdd.komentar.Visible (end) *@
+</div><!-- /page* -->
+@{ bukuTamuAdd.CloseRecordset(); }
+@Html.Raw(bukuTamuAdd.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(bukuTamuAdd.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fbuku_tamuadd">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fbuku_tamuadd" data-href="@AppPath(bukuTamuAdd.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(bukuTamuAdd.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@bukuTamuAdd.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("buku_tamu");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

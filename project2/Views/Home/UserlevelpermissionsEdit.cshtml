@@ -1,0 +1,141 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelpermissionsEdit.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelpermissionsEdit.UseLayout ? "_Layout" : "";
+}
+@userlevelpermissionsEdit.ShowPageHeader()
+@userlevelpermissionsEdit.ShowMessages()
+<main class="edit">
+<form name="fuserlevelpermissionsedit" id="fuserlevelpermissionsedit" class="@(userlevelpermissionsEdit.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelpermissionsEdit.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevelpermissions: currentTable } });
+var currentPageID = ew.PAGE_ID = "edit";
+var currentForm;
+var fuserlevelpermissionsedit;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelpermissionsedit")
+        .setPageId("edit")
+
+        // Add fields
+        .setFields([
+
+            ["UserLevelID", [fields.UserLevelID.visible && fields.UserLevelID.required ? ew.Validators.required(fields.UserLevelID.caption) : null, ew.Validators.integer], fields.UserLevelID.isInvalid],
+            ["_TableName", [fields._TableName.visible && fields._TableName.required ? ew.Validators.required(fields._TableName.caption) : null], fields._TableName.isInvalid],
+            ["Permission", [fields.Permission.visible && fields.Permission.required ? ew.Validators.required(fields.Permission.caption) : null, ew.Validators.integer], fields.Permission.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+<input type="hidden" name="modal" value="@ConvertToInt(userlevelpermissionsEdit.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(userlevelpermissionsEdit.OldKeyName)" value="@Html.Raw(userlevelpermissionsEdit.OldKey)">
+<div class="ew-edit-div"><!-- page* -->
+@if (userlevelpermissionsEdit.UserLevelID.Visible) { // userlevelpermissionsEdit.UserLevelID.Visible (begin)
+    <div id="r_UserLevelID" @Html.Raw(userlevelpermissionsEdit.UserLevelID.RowAttributes)>
+        <label id="elh_userlevelpermissions_UserLevelID" for="x_UserLevelID" class="@(userlevelpermissionsEdit.LeftColumnClass)">@Html.Raw(userlevelpermissionsEdit.UserLevelID.Caption)@Html.Raw(userlevelpermissionsEdit.UserLevelID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(userlevelpermissionsEdit.RightColumnClass)"><div @Html.Raw(userlevelpermissionsEdit.UserLevelID.CellAttributes)>
+<span id="el_userlevelpermissions_UserLevelID">
+<input type="@(userlevelpermissionsEdit.UserLevelID.InputTextType)" name="x_UserLevelID" id="x_UserLevelID" data-table="userlevelpermissions" data-field="x_UserLevelID" value="@Html.Raw(userlevelpermissionsEdit.UserLevelID.EditValue)" size="30" placeholder="@Html.Raw(HtmlEncode(userlevelpermissionsEdit.UserLevelID.PlaceHolder))" data-format-pattern="@(userlevelpermissionsEdit.UserLevelID.FormatPattern)"@Html.Raw(userlevelpermissionsEdit.UserLevelID.EditAttributes) aria-describedby="x_UserLevelID_help">
+@Html.Raw(userlevelpermissionsEdit.UserLevelID.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(userlevelpermissionsEdit.UserLevelID.GetErrorMessage())</div>
+<input type="hidden" data-table="userlevelpermissions" data-field="x_UserLevelID" data-hidden="1" data-old name="o_UserLevelID" id="o_UserLevelID" value="@Html.Raw(HtmlEncode(userlevelpermissionsEdit.UserLevelID.OldValue ?? userlevelpermissionsEdit.UserLevelID.CurrentValue))">
+</span>
+</div></div>
+    </div>
+} @* userlevelpermissionsEdit.UserLevelID.Visible (end) *@
+@if (userlevelpermissionsEdit._TableName.Visible) { // userlevelpermissionsEdit._TableName.Visible (begin)
+    <div id="r__TableName" @Html.Raw(userlevelpermissionsEdit._TableName.RowAttributes)>
+        <label id="elh_userlevelpermissions__TableName" for="x__TableName" class="@(userlevelpermissionsEdit.LeftColumnClass)">@Html.Raw(userlevelpermissionsEdit._TableName.Caption)@Html.Raw(userlevelpermissionsEdit._TableName.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(userlevelpermissionsEdit.RightColumnClass)"><div @Html.Raw(userlevelpermissionsEdit._TableName.CellAttributes)>
+<span id="el_userlevelpermissions__TableName">
+<input type="@(userlevelpermissionsEdit._TableName.InputTextType)" name="x__TableName" id="x__TableName" data-table="userlevelpermissions" data-field="x__TableName" value="@Html.Raw(userlevelpermissionsEdit._TableName.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(userlevelpermissionsEdit._TableName.PlaceHolder))" data-format-pattern="@(userlevelpermissionsEdit._TableName.FormatPattern)"@Html.Raw(userlevelpermissionsEdit._TableName.EditAttributes) aria-describedby="x__TableName_help">
+@Html.Raw(userlevelpermissionsEdit._TableName.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(userlevelpermissionsEdit._TableName.GetErrorMessage())</div>
+<input type="hidden" data-table="userlevelpermissions" data-field="x__TableName" data-hidden="1" data-old name="o__TableName" id="o__TableName" value="@Html.Raw(HtmlEncode(userlevelpermissionsEdit._TableName.OldValue ?? userlevelpermissionsEdit._TableName.CurrentValue))">
+</span>
+</div></div>
+    </div>
+} @* userlevelpermissionsEdit._TableName.Visible (end) *@
+@if (userlevelpermissionsEdit.Permission.Visible) { // userlevelpermissionsEdit.Permission.Visible (begin)
+    <div id="r_Permission" @Html.Raw(userlevelpermissionsEdit.Permission.RowAttributes)>
+        <label id="elh_userlevelpermissions_Permission" for="x_Permission" class="@(userlevelpermissionsEdit.LeftColumnClass)">@Html.Raw(userlevelpermissionsEdit.Permission.Caption)@Html.Raw(userlevelpermissionsEdit.Permission.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(userlevelpermissionsEdit.RightColumnClass)"><div @Html.Raw(userlevelpermissionsEdit.Permission.CellAttributes)>
+<span id="el_userlevelpermissions_Permission">
+<input type="@(userlevelpermissionsEdit.Permission.InputTextType)" name="x_Permission" id="x_Permission" data-table="userlevelpermissions" data-field="x_Permission" value="@Html.Raw(userlevelpermissionsEdit.Permission.EditValue)" size="30" placeholder="@Html.Raw(HtmlEncode(userlevelpermissionsEdit.Permission.PlaceHolder))" data-format-pattern="@(userlevelpermissionsEdit.Permission.FormatPattern)"@Html.Raw(userlevelpermissionsEdit.Permission.EditAttributes) aria-describedby="x_Permission_help">
+@Html.Raw(userlevelpermissionsEdit.Permission.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(userlevelpermissionsEdit.Permission.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* userlevelpermissionsEdit.Permission.Visible (end) *@
+</div><!-- /page* -->
+@{ userlevelpermissionsEdit.CloseRecordset(); }
+@Html.Raw(userlevelpermissionsEdit.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(userlevelpermissionsEdit.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fuserlevelpermissionsedit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fuserlevelpermissionsedit" data-href="@AppPath(userlevelpermissionsEdit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(userlevelpermissionsEdit.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+</main>
+@userlevelpermissionsEdit.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("userlevelpermissions");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

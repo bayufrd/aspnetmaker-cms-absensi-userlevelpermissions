@@ -1,0 +1,194 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (bukuTamuEdit.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = bukuTamuEdit.UseLayout ? "_Layout" : "";
+}
+@bukuTamuEdit.ShowPageHeader()
+@bukuTamuEdit.ShowMessages()
+<main class="edit">
+<form name="fbuku_tamuedit" id="fbuku_tamuedit" class="@(bukuTamuEdit.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuEdit.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentPageID = ew.PAGE_ID = "edit";
+var currentForm;
+var fbuku_tamuedit;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fbuku_tamuedit")
+        .setPageId("edit")
+
+        // Add fields
+        .setFields([
+
+            ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
+            ["nama", [fields.nama.visible && fields.nama.required ? ew.Validators.required(fields.nama.caption) : null], fields.nama.isInvalid],
+            ["tanggal_kunjungan", [fields.tanggal_kunjungan.visible && fields.tanggal_kunjungan.required ? ew.Validators.required(fields.tanggal_kunjungan.caption) : null, ew.Validators.datetime(fields.tanggal_kunjungan.clientFormatPattern)], fields.tanggal_kunjungan.isInvalid],
+            ["tujuan", [fields.tujuan.visible && fields.tujuan.required ? ew.Validators.required(fields.tujuan.caption) : null], fields.tujuan.isInvalid],
+            ["komentar", [fields.komentar.visible && fields.komentar.required ? ew.Validators.required(fields.komentar.caption) : null], fields.komentar.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+<input type="hidden" name="modal" value="@ConvertToInt(bukuTamuEdit.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(bukuTamuEdit.OldKeyName)" value="@Html.Raw(bukuTamuEdit.OldKey)">
+<div class="ew-edit-div"><!-- page* -->
+@if (bukuTamuEdit.id.Visible) { // bukuTamuEdit.id.Visible (begin)
+    <div id="r_id" @Html.Raw(bukuTamuEdit.id.RowAttributes)>
+        <label id="elh_buku_tamu_id" class="@(bukuTamuEdit.LeftColumnClass)">@Html.Raw(bukuTamuEdit.id.Caption)@Html.Raw(bukuTamuEdit.id.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuEdit.RightColumnClass)"><div @Html.Raw(bukuTamuEdit.id.CellAttributes)>
+<span id="el_buku_tamu_id">
+<span @Html.Raw(bukuTamuEdit.id.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(bukuTamuEdit.id.EditValue)))"></span>
+<input type="hidden" data-table="buku_tamu" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="@Html.Raw(HtmlEncode(bukuTamuEdit.id.CurrentValue))">
+</span>
+</div></div>
+    </div>
+} @* bukuTamuEdit.id.Visible (end) *@
+@if (bukuTamuEdit.nama.Visible) { // bukuTamuEdit.nama.Visible (begin)
+    <div id="r_nama" @Html.Raw(bukuTamuEdit.nama.RowAttributes)>
+        <label id="elh_buku_tamu_nama" for="x_nama" class="@(bukuTamuEdit.LeftColumnClass)">@Html.Raw(bukuTamuEdit.nama.Caption)@Html.Raw(bukuTamuEdit.nama.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuEdit.RightColumnClass)"><div @Html.Raw(bukuTamuEdit.nama.CellAttributes)>
+<span id="el_buku_tamu_nama">
+<input type="@(bukuTamuEdit.nama.InputTextType)" name="x_nama" id="x_nama" data-table="buku_tamu" data-field="x_nama" value="@Html.Raw(bukuTamuEdit.nama.EditValue)" size="30" maxlength="256" placeholder="@Html.Raw(HtmlEncode(bukuTamuEdit.nama.PlaceHolder))" data-format-pattern="@(bukuTamuEdit.nama.FormatPattern)"@Html.Raw(bukuTamuEdit.nama.EditAttributes) aria-describedby="x_nama_help">
+@Html.Raw(bukuTamuEdit.nama.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuEdit.nama.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuEdit.nama.Visible (end) *@
+@if (bukuTamuEdit.tanggal_kunjungan.Visible) { // bukuTamuEdit.tanggal_kunjungan.Visible (begin)
+    <div id="r_tanggal_kunjungan" @Html.Raw(bukuTamuEdit.tanggal_kunjungan.RowAttributes)>
+        <label id="elh_buku_tamu_tanggal_kunjungan" for="x_tanggal_kunjungan" class="@(bukuTamuEdit.LeftColumnClass)">@Html.Raw(bukuTamuEdit.tanggal_kunjungan.Caption)@Html.Raw(bukuTamuEdit.tanggal_kunjungan.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuEdit.RightColumnClass)"><div @Html.Raw(bukuTamuEdit.tanggal_kunjungan.CellAttributes)>
+<span id="el_buku_tamu_tanggal_kunjungan">
+<input type="@(bukuTamuEdit.tanggal_kunjungan.InputTextType)" name="x_tanggal_kunjungan" id="x_tanggal_kunjungan" data-table="buku_tamu" data-field="x_tanggal_kunjungan" value="@Html.Raw(bukuTamuEdit.tanggal_kunjungan.EditValue)" placeholder="@Html.Raw(HtmlEncode(bukuTamuEdit.tanggal_kunjungan.PlaceHolder))" data-format-pattern="@(bukuTamuEdit.tanggal_kunjungan.FormatPattern)"@Html.Raw(bukuTamuEdit.tanggal_kunjungan.EditAttributes) aria-describedby="x_tanggal_kunjungan_help">
+@Html.Raw(bukuTamuEdit.tanggal_kunjungan.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuEdit.tanggal_kunjungan.GetErrorMessage())</div>
+@if (!bukuTamuEdit.tanggal_kunjungan.ReadOnly && !bukuTamuEdit.tanggal_kunjungan.Disabled && !bukuTamuEdit.tanggal_kunjungan.EditAttrs.Is("readonly") && !bukuTamuEdit.tanggal_kunjungan.EditAttrs.Is("disabled")) {
+<script>
+loadjs.ready(["fbuku_tamuedit", "datetimepicker"], function () {
+    let format = "@Html.Raw(DateFormat(0))", // DN
+        options = {
+                localization: {
+                    locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
+                    hourCycle: format.match(/H/) ? "h24" : "h12",
+                    format,
+                    ...ew.language.phrase("datetimepicker")
+                },
+                display: {
+                    icons: {
+                        previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
+                        next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+                    },
+                    components: {
+                        clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
+                        hours: !!format.match(/h/i),
+                        minutes: !!format.match(/m/),
+                        seconds: !!format.match(/s/i)
+                    },
+                theme: ew.getPreferredTheme()
+                }
+            };
+    ew.createDateTimePicker("fbuku_tamuedit", "x_tanggal_kunjungan", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
+});
+</script>
+}
+</span>
+</div></div>
+    </div>
+} @* bukuTamuEdit.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuEdit.tujuan.Visible) { // bukuTamuEdit.tujuan.Visible (begin)
+    <div id="r_tujuan" @Html.Raw(bukuTamuEdit.tujuan.RowAttributes)>
+        <label id="elh_buku_tamu_tujuan" for="x_tujuan" class="@(bukuTamuEdit.LeftColumnClass)">@Html.Raw(bukuTamuEdit.tujuan.Caption)@Html.Raw(bukuTamuEdit.tujuan.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuEdit.RightColumnClass)"><div @Html.Raw(bukuTamuEdit.tujuan.CellAttributes)>
+<span id="el_buku_tamu_tujuan">
+<input type="@(bukuTamuEdit.tujuan.InputTextType)" name="x_tujuan" id="x_tujuan" data-table="buku_tamu" data-field="x_tujuan" value="@Html.Raw(bukuTamuEdit.tujuan.EditValue)" size="30" maxlength="65535" placeholder="@Html.Raw(HtmlEncode(bukuTamuEdit.tujuan.PlaceHolder))" data-format-pattern="@(bukuTamuEdit.tujuan.FormatPattern)"@Html.Raw(bukuTamuEdit.tujuan.EditAttributes) aria-describedby="x_tujuan_help">
+@Html.Raw(bukuTamuEdit.tujuan.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuEdit.tujuan.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuEdit.tujuan.Visible (end) *@
+@if (bukuTamuEdit.komentar.Visible) { // bukuTamuEdit.komentar.Visible (begin)
+    <div id="r_komentar" @Html.Raw(bukuTamuEdit.komentar.RowAttributes)>
+        <label id="elh_buku_tamu_komentar" for="x_komentar" class="@(bukuTamuEdit.LeftColumnClass)">@Html.Raw(bukuTamuEdit.komentar.Caption)@Html.Raw(bukuTamuEdit.komentar.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(bukuTamuEdit.RightColumnClass)"><div @Html.Raw(bukuTamuEdit.komentar.CellAttributes)>
+<span id="el_buku_tamu_komentar">
+<input type="@(bukuTamuEdit.komentar.InputTextType)" name="x_komentar" id="x_komentar" data-table="buku_tamu" data-field="x_komentar" value="@Html.Raw(bukuTamuEdit.komentar.EditValue)" size="30" maxlength="65535" placeholder="@Html.Raw(HtmlEncode(bukuTamuEdit.komentar.PlaceHolder))" data-format-pattern="@(bukuTamuEdit.komentar.FormatPattern)"@Html.Raw(bukuTamuEdit.komentar.EditAttributes) aria-describedby="x_komentar_help">
+@Html.Raw(bukuTamuEdit.komentar.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(bukuTamuEdit.komentar.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* bukuTamuEdit.komentar.Visible (end) *@
+</div><!-- /page* -->
+@{ bukuTamuEdit.CloseRecordset(); }
+@Html.Raw(bukuTamuEdit.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(bukuTamuEdit.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fbuku_tamuedit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fbuku_tamuedit" data-href="@AppPath(bukuTamuEdit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(bukuTamuEdit.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+</main>
+@bukuTamuEdit.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("buku_tamu");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

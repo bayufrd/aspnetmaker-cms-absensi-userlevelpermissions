@@ -1,0 +1,109 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (user2View.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = user2View.UseLayout ? "_Layout" : "";
+}
+@if (!user2View.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @user2View.ExportOptions.RenderBody()
+    @user2View.OtherOptions.RenderBody()
+</div>
+}
+@user2View.ShowPageHeader()
+@user2View.ShowMessages()
+<main class="view">
+<form name="fuser2view" id="fuser2view" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!user2View.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(user2View.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { user2: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fuser2view;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuser2view")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(user2View.IsModal)">
+<table class="@(user2View.TableClass)">
+@if (user2View.id.Visible) { // user2View.id.Visible (begin)
+    <tr id="r_id" @Html.Raw(user2View.id.RowAttributes)>
+        <td class="@(user2View.TableLeftColumnClass)"><span id="elh_user2_id">@Html.Raw(user2View.id.Caption)</span></td>
+        <td data-name="id" @Html.Raw(user2View.id.CellAttributes)>
+<span id="el_user2_id">
+<span @Html.Raw(user2View.id.ViewAttributes)>
+@Html.Raw(user2View.id.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* user2View.id.Visible (end) *@
+@if (user2View._username.Visible) { // user2View._username.Visible (begin)
+    <tr id="r__username" @Html.Raw(user2View._username.RowAttributes)>
+        <td class="@(user2View.TableLeftColumnClass)"><span id="elh_user2__username">@Html.Raw(user2View._username.Caption)</span></td>
+        <td data-name="_username" @Html.Raw(user2View._username.CellAttributes)>
+<span id="el_user2__username">
+<span @Html.Raw(user2View._username.ViewAttributes)>
+@Html.Raw(user2View._username.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* user2View._username.Visible (end) *@
+@if (user2View.password.Visible) { // user2View.password.Visible (begin)
+    <tr id="r_password" @Html.Raw(user2View.password.RowAttributes)>
+        <td class="@(user2View.TableLeftColumnClass)"><span id="elh_user2_password">@Html.Raw(user2View.password.Caption)</span></td>
+        <td data-name="password" @Html.Raw(user2View.password.CellAttributes)>
+<span id="el_user2_password">
+<span @Html.Raw(user2View.password.ViewAttributes)>
+@Html.Raw(user2View.password.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* user2View.password.Visible (end) *@
+@if (user2View._userlevel.Visible) { // user2View._userlevel.Visible (begin)
+    <tr id="r__userlevel" @Html.Raw(user2View._userlevel.RowAttributes)>
+        <td class="@(user2View.TableLeftColumnClass)"><span id="elh_user2__userlevel">@Html.Raw(user2View._userlevel.Caption)</span></td>
+        <td data-name="_userlevel" @Html.Raw(user2View._userlevel.CellAttributes)>
+<span id="el_user2__userlevel">
+<span @Html.Raw(user2View._userlevel.ViewAttributes)>
+@Html.Raw(user2View._userlevel.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* user2View._userlevel.Visible (end) *@
+</table>
+@{ user2View.CloseRecordset(); }
+</form>
+</main>
+@user2View.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!user2View.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

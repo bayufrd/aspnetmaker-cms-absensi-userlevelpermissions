@@ -1,0 +1,140 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelsAdd.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelsAdd.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelsAdd.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevels: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fuserlevelsadd;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelsadd")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["UserLevelID", [fields.UserLevelID.visible && fields.UserLevelID.required ? ew.Validators.required(fields.UserLevelID.caption) : null, ew.Validators.userLevelId, ew.Validators.integer], fields.UserLevelID.isInvalid],
+            ["UserLevelName", [fields.UserLevelName.visible && fields.UserLevelName.required ? ew.Validators.required(fields.UserLevelName.caption) : null, ew.Validators.userLevelName('UserLevelID')], fields.UserLevelName.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@userlevelsAdd.ShowPageHeader()
+@userlevelsAdd.ShowMessages()
+<form name="fuserlevelsadd" id="fuserlevelsadd" class="@(userlevelsAdd.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(userlevelsAdd.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(userlevelsAdd.OldKeyName)" value="@Html.Raw(userlevelsAdd.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (userlevelsAdd.UserLevelID.Visible) { // userlevelsAdd.UserLevelID.Visible (begin)
+    <div id="r_UserLevelID" @Html.Raw(userlevelsAdd.UserLevelID.RowAttributes)>
+        <label id="elh_userlevels_UserLevelID" for="x_UserLevelID" class="@(userlevelsAdd.LeftColumnClass)">@Html.Raw(userlevelsAdd.UserLevelID.Caption)@Html.Raw(userlevelsAdd.UserLevelID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(userlevelsAdd.RightColumnClass)"><div @Html.Raw(userlevelsAdd.UserLevelID.CellAttributes)>
+<span id="el_userlevels_UserLevelID">
+<input type="@(userlevelsAdd.UserLevelID.InputTextType)" name="x_UserLevelID" id="x_UserLevelID" data-table="userlevels" data-field="x_UserLevelID" value="@Html.Raw(userlevelsAdd.UserLevelID.EditValue)" size="30" placeholder="@Html.Raw(HtmlEncode(userlevelsAdd.UserLevelID.PlaceHolder))" data-format-pattern="@(userlevelsAdd.UserLevelID.FormatPattern)"@Html.Raw(userlevelsAdd.UserLevelID.EditAttributes) aria-describedby="x_UserLevelID_help">
+@Html.Raw(userlevelsAdd.UserLevelID.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(userlevelsAdd.UserLevelID.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* userlevelsAdd.UserLevelID.Visible (end) *@
+@if (userlevelsAdd.UserLevelName.Visible) { // userlevelsAdd.UserLevelName.Visible (begin)
+    <div id="r_UserLevelName" @Html.Raw(userlevelsAdd.UserLevelName.RowAttributes)>
+        <label id="elh_userlevels_UserLevelName" for="x_UserLevelName" class="@(userlevelsAdd.LeftColumnClass)">@Html.Raw(userlevelsAdd.UserLevelName.Caption)@Html.Raw(userlevelsAdd.UserLevelName.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(userlevelsAdd.RightColumnClass)"><div @Html.Raw(userlevelsAdd.UserLevelName.CellAttributes)>
+<span id="el_userlevels_UserLevelName">
+<input type="@(userlevelsAdd.UserLevelName.InputTextType)" name="x_UserLevelName" id="x_UserLevelName" data-table="userlevels" data-field="x_UserLevelName" value="@Html.Raw(userlevelsAdd.UserLevelName.EditValue)" size="30" maxlength="255" placeholder="@Html.Raw(HtmlEncode(userlevelsAdd.UserLevelName.PlaceHolder))" data-format-pattern="@(userlevelsAdd.UserLevelName.FormatPattern)"@Html.Raw(userlevelsAdd.UserLevelName.EditAttributes) aria-describedby="x_UserLevelName_help">
+@Html.Raw(userlevelsAdd.UserLevelName.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(userlevelsAdd.UserLevelName.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* userlevelsAdd.UserLevelName.Visible (end) *@
+    <!-- row for permission values -->
+    <div id="rp_permission" class="row">
+        <label id="elh_permission" class="@(userlevelsAdd.LeftColumnClass)">@Html.Raw(Language.Phrase("Permission", true))</label>
+        <div class="@(userlevelsAdd.RightColumnClass)">
+@foreach (string privilege in Config.Privileges) {
+    if (privilege != "admin" || IsSysAdmin()) {
+        var priv = TitleCaseInvariant(privilege);
+        var value = Enum.Parse<Allow>(priv);
+        var phrase = Language.Phrase("Permission" + priv);
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="x__Allow@(priv)" id="@priv" value="@value"><label class="form-check-label" for="@priv">@Html.Raw(phrase)</label>
+            </div>
+    }
+}
+        </div>
+    </div>
+</div><!-- /page* -->
+@{ userlevelsAdd.CloseRecordset(); }
+@Html.Raw(userlevelsAdd.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(userlevelsAdd.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fuserlevelsadd">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fuserlevelsadd" data-href="@AppPath(userlevelsAdd.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(userlevelsAdd.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@userlevelsAdd.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("userlevels");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

@@ -1,0 +1,251 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelsList.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelsList.UseLayout ? "_Layout" : "";
+}
+@if (!userlevelsList.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelsList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevels: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(userlevelsList.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(userlevelsList.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(userlevelsList.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(userlevelsList.FormKeyCountName)")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!userlevelsList.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (userlevelsList.TotalRecords > 0 && userlevelsList.ExportOptions.Visible) {
+    userlevelsList.ExportOptions.Render("body");
+}
+@if (userlevelsList.ImportOptions.Visible) {
+    userlevelsList.ImportOptions.Render("body");
+}
+@if (userlevelsList.SearchOptions.Visible) {
+    userlevelsList.SearchOptions.Render("body");
+}
+@if (userlevelsList.FilterOptions.Visible) {
+    userlevelsList.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!userlevelsList.IsModal) {
+<form name="fuserlevelssrch" id="fuserlevelssrch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fuserlevelssrch_search_panel" class="mb-2 mb-sm-0 @(userlevelsList.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelsList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevels: currentTable } });
+var currentForm;
+var fuserlevelssrch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelssrch")
+        .setPageId("list")
+@if (userlevelsList.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(userlevelsList.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (Security.CanSearch) {
+if (!userlevelsList.IsExport() && Empty(userlevelsList.CurrentAction) && userlevelsList.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(userlevelsList.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(userlevelsList.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(userlevelsList.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(userlevelsList.BasicSearch.SessionType == "" ? " active" : "")" form="fuserlevelssrch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(userlevelsList.BasicSearch.SessionType == "=" ? " active" : "")" form="fuserlevelssrch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(userlevelsList.BasicSearch.SessionType == "AND" ? " active" : "")" form="fuserlevelssrch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(userlevelsList.BasicSearch.SessionType == "OR" ? " active" : "")" form="fuserlevelssrch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+}
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@userlevelsList.ShowPageHeader()
+@userlevelsList.ShowMessages()
+<main class="list @(userlevelsList.TotalRecords == 0 && !userlevelsList.IsAdd ? " ew-no-record" : "")">
+<div id="ew-header-options">
+    @userlevelsList.HeaderOptions.RenderBody()
+</div>
+<div id="ew-list">
+@if (userlevelsList.TotalRecords > 0 || !Empty(userlevelsList.CurrentAction)) {
+<div class="card ew-card ew-grid@(userlevelsList.IsAddOrEdit ? " ew-grid-add-edit" : "") @(userlevelsList.TableGridClass)">
+<form name="@(userlevelsList.FormName)" id="@(userlevelsList.FormName)" class="ew-form ew-list-form" action="@AppPath(userlevelsList.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (userlevelsList.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_userlevels" class="card-body ew-grid-middle-panel @(userlevelsList.TableContainerClass)" style="@(userlevelsList.TableContainerStyle)">
+@if (userlevelsList.TotalRecords > 0 || userlevelsList.IsGridEdit || userlevelsList.IsMultiEdit) {
+<table id="tbl_userlevelslist" class="@(userlevelsList.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    userlevelsList.RowType = RowType.Header;
+
+    // Render list options
+    await userlevelsList.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@userlevelsList.ListOptions.RenderHeader("left")
+@if (userlevelsList.UserLevelID.Visible) { // userlevelsList.UserLevelID.Visible (begin)
+        <th data-name="UserLevelID" class="@(userlevelsList.UserLevelID.HeaderCellClass)"><div id="elh_userlevels_UserLevelID" class="userlevels_UserLevelID">@Html.Raw(userlevelsList.RenderFieldHeader(userlevelsList.UserLevelID))</div></th>
+} @* userlevelsList.UserLevelID.Visible (end) *@
+@if (userlevelsList.UserLevelName.Visible) { // userlevelsList.UserLevelName.Visible (begin)
+        <th data-name="UserLevelName" class="@(userlevelsList.UserLevelName.HeaderCellClass)"><div id="elh_userlevels_UserLevelName" class="userlevels_UserLevelName">@Html.Raw(userlevelsList.RenderFieldHeader(userlevelsList.UserLevelName))</div></th>
+} @* userlevelsList.UserLevelName.Visible (end) *@
+@* Render list options (header, right) *@
+@userlevelsList.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(userlevelsList.PageNumber)">
+@{
+    await userlevelsList.SetupGrid();
+    bool eof = userlevelsList.Recordset == null; // DN
+}
+@while (userlevelsList.RecordCount < userlevelsList.StopRecord || SameString(userlevelsList.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(userlevelsList.RowIndex, "$rowindex$") &&
+        (!userlevelsList.IsGridAdd || userlevelsList.CurrentMode == "copy") &&
+        (!((userlevelsList.IsCopy || userlevelsList.IsAdd) && userlevelsList.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await userlevelsList.Recordset.ReadAsync();
+    userlevelsList.RecordCount++;
+    if (userlevelsList.RecordCount >= userlevelsList.StartRecord) {
+        await userlevelsList.SetupRow();
+    <tr @Html.Raw(userlevelsList.RowAttributes)>
+    @* Render list options (body, left) *@
+    @userlevelsList.ListOptions.RenderBody("left", userlevelsList.RowCount)
+    @if (userlevelsList.UserLevelID.Visible) { // userlevelsList.UserLevelID.Visible (begin)
+        <td data-name="UserLevelID" @Html.Raw(userlevelsList.UserLevelID.CellAttributes)>
+<span id="el@(userlevelsList.RowIndex == "$rowindex$" ? "$rowindex$" : userlevelsList.RowCount)_userlevels_UserLevelID" class="el_userlevels_UserLevelID">
+<span @Html.Raw(userlevelsList.UserLevelID.ViewAttributes)>
+@Html.Raw(userlevelsList.UserLevelID.GetViewValue())</span>
+</span>
+</td>
+    } @* userlevelsList.UserLevelID.Visible (end) *@
+    @if (userlevelsList.UserLevelName.Visible) { // userlevelsList.UserLevelName.Visible (begin)
+        <td data-name="UserLevelName" @Html.Raw(userlevelsList.UserLevelName.CellAttributes)>
+<span id="el@(userlevelsList.RowIndex == "$rowindex$" ? "$rowindex$" : userlevelsList.RowCount)_userlevels_UserLevelName" class="el_userlevels_UserLevelName">
+<span @Html.Raw(userlevelsList.UserLevelName.ViewAttributes)>
+@Html.Raw(userlevelsList.UserLevelName.GetViewValue())</span>
+</span>
+</td>
+    } @* userlevelsList.UserLevelName.Visible (end) *@
+    @* Render list options (body, right) *@
+    @userlevelsList.ListOptions.RenderBody("right", userlevelsList.RowCount)
+    </tr>
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(userlevelsList.RowIndex, "$rowindex$"))
+        userlevelsList.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((userlevelsList.IsCopy || userlevelsList.IsAdd) && userlevelsList.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        userlevelsList.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(userlevelsList.CurrentAction) && !userlevelsList.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ userlevelsList.CloseRecordset(); }
+@if (!userlevelsList.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!userlevelsList.IsGridAdd && !(userlevelsList.IsGridEdit && userlevelsList.ModalGridEdit) && !userlevelsList.IsMultiEdit) {
+@Html.Raw(userlevelsList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@userlevelsList.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@userlevelsList.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+</div>
+<div id="ew-footer-options">
+    @userlevelsList.FooterOptions.RenderBody()
+</div>
+</main>
+@userlevelsList.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!userlevelsList.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("userlevels");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

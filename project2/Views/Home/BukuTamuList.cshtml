@@ -1,0 +1,328 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (bukuTamuList.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = bukuTamuList.UseLayout ? "_Layout" : "";
+}
+@if (!bukuTamuList.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(bukuTamuList.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(bukuTamuList.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(bukuTamuList.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(bukuTamuList.FormKeyCountName)")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!bukuTamuList.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (bukuTamuList.TotalRecords > 0 && bukuTamuList.ExportOptions.Visible) {
+    bukuTamuList.ExportOptions.Render("body");
+}
+@if (bukuTamuList.ImportOptions.Visible) {
+    bukuTamuList.ImportOptions.Render("body");
+}
+@if (bukuTamuList.SearchOptions.Visible) {
+    bukuTamuList.SearchOptions.Render("body");
+}
+@if (bukuTamuList.FilterOptions.Visible) {
+    bukuTamuList.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!bukuTamuList.IsModal) {
+<form name="fbuku_tamusrch" id="fbuku_tamusrch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fbuku_tamusrch_search_panel" class="mb-2 mb-sm-0 @(bukuTamuList.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentForm;
+var fbuku_tamusrch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fbuku_tamusrch")
+        .setPageId("list")
+@if (bukuTamuList.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(bukuTamuList.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (Security.CanSearch) {
+if (!bukuTamuList.IsExport() && Empty(bukuTamuList.CurrentAction) && bukuTamuList.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(bukuTamuList.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(bukuTamuList.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(bukuTamuList.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(bukuTamuList.BasicSearch.SessionType == "" ? " active" : "")" form="fbuku_tamusrch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(bukuTamuList.BasicSearch.SessionType == "=" ? " active" : "")" form="fbuku_tamusrch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(bukuTamuList.BasicSearch.SessionType == "AND" ? " active" : "")" form="fbuku_tamusrch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(bukuTamuList.BasicSearch.SessionType == "OR" ? " active" : "")" form="fbuku_tamusrch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+}
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@bukuTamuList.ShowPageHeader()
+@bukuTamuList.ShowMessages()
+<main class="list @(bukuTamuList.TotalRecords == 0 && !bukuTamuList.IsAdd ? " ew-no-record" : "")">
+<div id="ew-header-options">
+    @bukuTamuList.HeaderOptions.RenderBody()
+</div>
+<div id="ew-list">
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+<!-- Middle Container -->
+@:<div id="ew-middle" class="@(bukuTamuList.MiddleContentClass)">
+}
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+<!-- Content Container -->
+@:<div id="ew-content" class="@(bukuTamuList.ContainerClass)">
+}
+@if (bukuTamuList.TotalRecords > 0 || !Empty(bukuTamuList.CurrentAction)) {
+<div class="card ew-card ew-grid@(bukuTamuList.IsAddOrEdit ? " ew-grid-add-edit" : "") @(bukuTamuList.TableGridClass)">
+<form name="@(bukuTamuList.FormName)" id="@(bukuTamuList.FormName)" class="ew-form ew-list-form" action="@AppPath(bukuTamuList.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (bukuTamuList.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_buku_tamu" class="card-body ew-grid-middle-panel @(bukuTamuList.TableContainerClass)" style="@(bukuTamuList.TableContainerStyle)">
+@if (bukuTamuList.TotalRecords > 0 || bukuTamuList.IsGridEdit || bukuTamuList.IsMultiEdit) {
+<table id="tbl_buku_tamulist" class="@(bukuTamuList.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    bukuTamuList.RowType = RowType.Header;
+
+    // Render list options
+    await bukuTamuList.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@bukuTamuList.ListOptions.RenderHeader("left")
+@if (bukuTamuList.id.Visible) { // bukuTamuList.id.Visible (begin)
+        <th data-name="id" class="@(bukuTamuList.id.HeaderCellClass)"><div id="elh_buku_tamu_id" class="buku_tamu_id">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.id))</div></th>
+} @* bukuTamuList.id.Visible (end) *@
+@if (bukuTamuList.nama.Visible) { // bukuTamuList.nama.Visible (begin)
+        <th data-name="nama" class="@(bukuTamuList.nama.HeaderCellClass)"><div id="elh_buku_tamu_nama" class="buku_tamu_nama">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.nama))</div></th>
+} @* bukuTamuList.nama.Visible (end) *@
+@if (bukuTamuList.umur.Visible) { // bukuTamuList.umur.Visible (begin)
+        <th data-name="umur" class="@(bukuTamuList.umur.HeaderCellClass)"><div id="elh_buku_tamu_umur" class="buku_tamu_umur">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.umur))</div></th>
+} @* bukuTamuList.umur.Visible (end) *@
+@if (bukuTamuList.tanggal_kunjungan.Visible) { // bukuTamuList.tanggal_kunjungan.Visible (begin)
+        <th data-name="tanggal_kunjungan" class="@(bukuTamuList.tanggal_kunjungan.HeaderCellClass)"><div id="elh_buku_tamu_tanggal_kunjungan" class="buku_tamu_tanggal_kunjungan">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.tanggal_kunjungan))</div></th>
+} @* bukuTamuList.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuList.tujuan.Visible) { // bukuTamuList.tujuan.Visible (begin)
+        <th data-name="tujuan" class="@(bukuTamuList.tujuan.HeaderCellClass)"><div id="elh_buku_tamu_tujuan" class="buku_tamu_tujuan">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.tujuan))</div></th>
+} @* bukuTamuList.tujuan.Visible (end) *@
+@if (bukuTamuList.komentar.Visible) { // bukuTamuList.komentar.Visible (begin)
+        <th data-name="komentar" class="@(bukuTamuList.komentar.HeaderCellClass)"><div id="elh_buku_tamu_komentar" class="buku_tamu_komentar">@Html.Raw(bukuTamuList.RenderFieldHeader(bukuTamuList.komentar))</div></th>
+} @* bukuTamuList.komentar.Visible (end) *@
+@* Render list options (header, right) *@
+@bukuTamuList.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(bukuTamuList.PageNumber)">
+@{
+    await bukuTamuList.SetupGrid();
+    bool eof = bukuTamuList.Recordset == null; // DN
+}
+@while (bukuTamuList.RecordCount < bukuTamuList.StopRecord || SameString(bukuTamuList.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(bukuTamuList.RowIndex, "$rowindex$") &&
+        (!bukuTamuList.IsGridAdd || bukuTamuList.CurrentMode == "copy") &&
+        (!((bukuTamuList.IsCopy || bukuTamuList.IsAdd) && bukuTamuList.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await bukuTamuList.Recordset.ReadAsync();
+    bukuTamuList.RecordCount++;
+    if (bukuTamuList.RecordCount >= bukuTamuList.StartRecord) {
+        await bukuTamuList.SetupRow();
+    <tr @Html.Raw(bukuTamuList.RowAttributes)>
+    @* Render list options (body, left) *@
+    @bukuTamuList.ListOptions.RenderBody("left", bukuTamuList.RowCount)
+    @if (bukuTamuList.id.Visible) { // bukuTamuList.id.Visible (begin)
+        <td data-name="id" @Html.Raw(bukuTamuList.id.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_id" class="el_buku_tamu_id">
+<span @Html.Raw(bukuTamuList.id.ViewAttributes)>
+@Html.Raw(bukuTamuList.id.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.id.Visible (end) *@
+    @if (bukuTamuList.nama.Visible) { // bukuTamuList.nama.Visible (begin)
+        <td data-name="nama" @Html.Raw(bukuTamuList.nama.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_nama" class="el_buku_tamu_nama">
+<span @Html.Raw(bukuTamuList.nama.ViewAttributes)>
+@Html.Raw(bukuTamuList.nama.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.nama.Visible (end) *@
+    @if (bukuTamuList.umur.Visible) { // bukuTamuList.umur.Visible (begin)
+        <td data-name="umur" @Html.Raw(bukuTamuList.umur.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_umur" class="el_buku_tamu_umur">
+<span @Html.Raw(bukuTamuList.umur.ViewAttributes)>
+@Html.Raw(bukuTamuList.umur.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.umur.Visible (end) *@
+    @if (bukuTamuList.tanggal_kunjungan.Visible) { // bukuTamuList.tanggal_kunjungan.Visible (begin)
+        <td data-name="tanggal_kunjungan" @Html.Raw(bukuTamuList.tanggal_kunjungan.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_tanggal_kunjungan" class="el_buku_tamu_tanggal_kunjungan">
+<span @Html.Raw(bukuTamuList.tanggal_kunjungan.ViewAttributes)>
+@Html.Raw(bukuTamuList.tanggal_kunjungan.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.tanggal_kunjungan.Visible (end) *@
+    @if (bukuTamuList.tujuan.Visible) { // bukuTamuList.tujuan.Visible (begin)
+        <td data-name="tujuan" @Html.Raw(bukuTamuList.tujuan.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_tujuan" class="el_buku_tamu_tujuan">
+<span @Html.Raw(bukuTamuList.tujuan.ViewAttributes)>
+@Html.Raw(bukuTamuList.tujuan.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.tujuan.Visible (end) *@
+    @if (bukuTamuList.komentar.Visible) { // bukuTamuList.komentar.Visible (begin)
+        <td data-name="komentar" @Html.Raw(bukuTamuList.komentar.CellAttributes)>
+<span id="el@(bukuTamuList.RowIndex == "$rowindex$" ? "$rowindex$" : bukuTamuList.RowCount)_buku_tamu_komentar" class="el_buku_tamu_komentar">
+<span @Html.Raw(bukuTamuList.komentar.ViewAttributes)>
+@Html.Raw(bukuTamuList.komentar.GetViewValue())</span>
+</span>
+</td>
+    } @* bukuTamuList.komentar.Visible (end) *@
+    @* Render list options (body, right) *@
+    @bukuTamuList.ListOptions.RenderBody("right", bukuTamuList.RowCount)
+    </tr>
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(bukuTamuList.RowIndex, "$rowindex$"))
+        bukuTamuList.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((bukuTamuList.IsCopy || bukuTamuList.IsAdd) && bukuTamuList.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        bukuTamuList.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(bukuTamuList.CurrentAction) && !bukuTamuList.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ bukuTamuList.CloseRecordset(); }
+@if (!bukuTamuList.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!bukuTamuList.IsGridAdd && !(bukuTamuList.IsGridEdit && bukuTamuList.ModalGridEdit) && !bukuTamuList.IsMultiEdit) {
+@Html.Raw(bukuTamuList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@bukuTamuList.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@bukuTamuList.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+@:</div>
+<!-- /#ew-content -->
+}
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+@:</div>
+<!-- /#ew-middle -->
+}
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+<!-- Bottom Container -->
+@:<div id="ew-bottom" class="@(bukuTamuList.BottomContentClass)">
+}
+@* Chart (begin) *@
+@{
+    if (Empty(DashboardReport)) {
+        // Set up chart drilldown
+        bukuTamu.UmurPengunjung.DrillDownInPanel = bukuTamuList.DrillDownInPanel;
+        @await bukuTamu.UmurPengunjung.Render("ew-chart-bottom");
+    }
+}
+@* Chart (end) *@
+@if (!bukuTamuList.IsExport() || bukuTamuList.IsExport("print")) {
+@:</div>
+<!-- /#ew-bottom -->
+}
+</div>
+<div id="ew-footer-options">
+    @bukuTamuList.FooterOptions.RenderBody()
+</div>
+</main>
+@bukuTamuList.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!bukuTamuList.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("buku_tamu");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

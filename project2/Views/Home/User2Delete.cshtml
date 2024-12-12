@@ -1,0 +1,131 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (user2Delete.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = user2Delete.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(user2Delete.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { user2: currentTable } });
+var currentPageID = ew.PAGE_ID = "delete";
+var currentForm;
+var fuser2delete;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuser2delete")
+        .setPageId("delete")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@user2Delete.ShowPageHeader()
+@user2Delete.ShowMessages()
+<form name="fuser2delete" id="fuser2delete" class="ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in user2Delete.RecordKeys) {
+<input type="hidden" name="key_m[]" value="@key">
+}
+<div class="card ew-card ew-grid @(user2Delete.TableGridClass)">
+<div class="card-body ew-grid-middle-panel @(user2Delete.TableContainerClass)" style="@(user2Delete.TableContainerStyle)">
+<table class="@(user2Delete.TableClass)">
+    <thead>
+    <tr class="ew-table-header">
+@if (user2Delete.id.Visible) { // user2Delete.id.Visible (begin)
+        <th class="@Html.Raw(user2Delete.id.HeaderCellClass)"><span id="elh_user2_id" class="user2_id">@Html.Raw(user2Delete.id.Caption)</span></th>
+} @* user2Delete.id.Visible (end) *@
+@if (user2Delete._username.Visible) { // user2Delete._username.Visible (begin)
+        <th class="@Html.Raw(user2Delete._username.HeaderCellClass)"><span id="elh_user2__username" class="user2__username">@Html.Raw(user2Delete._username.Caption)</span></th>
+} @* user2Delete._username.Visible (end) *@
+@if (user2Delete.password.Visible) { // user2Delete.password.Visible (begin)
+        <th class="@Html.Raw(user2Delete.password.HeaderCellClass)"><span id="elh_user2_password" class="user2_password">@Html.Raw(user2Delete.password.Caption)</span></th>
+} @* user2Delete.password.Visible (end) *@
+@if (user2Delete._userlevel.Visible) { // user2Delete._userlevel.Visible (begin)
+        <th class="@Html.Raw(user2Delete._userlevel.HeaderCellClass)"><span id="elh_user2__userlevel" class="user2__userlevel">@Html.Raw(user2Delete._userlevel.Caption)</span></th>
+} @* user2Delete._userlevel.Visible (end) *@
+    </tr>
+    </thead>
+    <tbody>
+@{ user2Delete.RecordCount = 0; }
+@while (user2Delete.Recordset != null && await user2Delete.Recordset.ReadAsync()) { // DN
+    user2Delete.RecordCount++;
+    user2Delete.RowCount++;
+
+    // Set row properties
+    user2Delete.ResetAttributes();
+    user2Delete.RowType = RowType.View; // View
+
+    // Get the field contents
+    await user2Delete.LoadRowValues(user2Delete.Recordset);
+
+    // Render row
+    await user2Delete.RenderRow();
+    <tr @Html.Raw(user2Delete.RowAttributes)>
+@if (user2Delete.id.Visible) { // user2Delete.id.Visible (begin)
+        <td @Html.Raw(user2Delete.id.CellAttributes)>
+<span id="">
+<span @Html.Raw(user2Delete.id.ViewAttributes)>
+@Html.Raw(user2Delete.id.GetViewValue())</span>
+</span></td>
+} @* user2Delete.id.Visible (end) *@
+@if (user2Delete._username.Visible) { // user2Delete._username.Visible (begin)
+        <td @Html.Raw(user2Delete._username.CellAttributes)>
+<span id="">
+<span @Html.Raw(user2Delete._username.ViewAttributes)>
+@Html.Raw(user2Delete._username.GetViewValue())</span>
+</span></td>
+} @* user2Delete._username.Visible (end) *@
+@if (user2Delete.password.Visible) { // user2Delete.password.Visible (begin)
+        <td @Html.Raw(user2Delete.password.CellAttributes)>
+<span id="">
+<span @Html.Raw(user2Delete.password.ViewAttributes)>
+@Html.Raw(user2Delete.password.GetViewValue())</span>
+</span></td>
+} @* user2Delete.password.Visible (end) *@
+@if (user2Delete._userlevel.Visible) { // user2Delete._userlevel.Visible (begin)
+        <td @Html.Raw(user2Delete._userlevel.CellAttributes)>
+<span id="">
+<span @Html.Raw(user2Delete._userlevel.ViewAttributes)>
+@Html.Raw(user2Delete._userlevel.GetViewValue())</span>
+</span></td>
+} @* user2Delete._userlevel.Visible (end) *@
+    </tr>
+}
+@{ user2Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div class="ew-buttons ew-desktop-buttons">
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(user2Delete.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+</div>
+</form>
+@user2Delete.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

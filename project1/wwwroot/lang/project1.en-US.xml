@@ -1,0 +1,26 @@
+<ew-language date="2024/12/5" id="en-US" author="e.World Technology Limited">
+  <project>
+    <phrase id="footertext" value="&amp;copy;2024 e.World Technology Limited. All rights reserved." />
+    <menu id="1">
+      <phrase id="menutext" value="buku tamu" />
+    </menu>
+    <table id="buku_tamu">
+      <phrase id="tblcaption" value="buku tamu" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="tanggal_kunjungan">
+        <phrase id="fldcaption" value="tanggal kunjungan" />
+      </field>
+      <field id="tujuan">
+        <phrase id="fldcaption" value="tujuan" />
+      </field>
+      <field id="komentar">
+        <phrase id="fldcaption" value="komentar" />
+      </field>
+    </table>
+  </project>
+</ew-language>

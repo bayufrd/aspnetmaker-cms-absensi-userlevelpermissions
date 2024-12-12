@@ -1,0 +1,176 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (user2Add.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = user2Add.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(user2Add.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { user2: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fuser2add;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuser2add")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["_username", [fields._username.visible && fields._username.required ? ew.Validators.required(fields._username.caption) : null], fields._username.isInvalid],
+            ["password", [fields.password.visible && fields.password.required ? ew.Validators.required(fields.password.caption) : null], fields.password.isInvalid],
+            ["_userlevel", [fields._userlevel.visible && fields._userlevel.required ? ew.Validators.required(fields._userlevel.caption) : null], fields._userlevel.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+            "_userlevel": @Html.Raw(user2Add._userlevel.ToClientList(user2Add)),
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@user2Add.ShowPageHeader()
+@user2Add.ShowMessages()
+<form name="fuser2add" id="fuser2add" class="@(user2Add.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(user2Add.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(user2Add.OldKeyName)" value="@Html.Raw(user2Add.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (user2Add._username.Visible) { // user2Add._username.Visible (begin)
+    <div id="r__username" @Html.Raw(user2Add._username.RowAttributes)>
+        <label id="elh_user2__username" for="x__username" class="@(user2Add.LeftColumnClass)">@Html.Raw(user2Add._username.Caption)@Html.Raw(user2Add._username.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(user2Add.RightColumnClass)"><div @Html.Raw(user2Add._username.CellAttributes)>
+<span id="el_user2__username">
+<input type="@(user2Add._username.InputTextType)" name="x__username" id="x__username" data-table="user2" data-field="x__username" value="@Html.Raw(user2Add._username.EditValue)" size="30" maxlength="256" placeholder="@Html.Raw(HtmlEncode(user2Add._username.PlaceHolder))" data-format-pattern="@(user2Add._username.FormatPattern)"@Html.Raw(user2Add._username.EditAttributes) aria-describedby="x__username_help">
+@Html.Raw(user2Add._username.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(user2Add._username.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* user2Add._username.Visible (end) *@
+@if (user2Add.password.Visible) { // user2Add.password.Visible (begin)
+    <div id="r_password" @Html.Raw(user2Add.password.RowAttributes)>
+        <label id="elh_user2_password" for="x_password" class="@(user2Add.LeftColumnClass)">@Html.Raw(user2Add.password.Caption)@Html.Raw(user2Add.password.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(user2Add.RightColumnClass)"><div @Html.Raw(user2Add.password.CellAttributes)>
+<span id="el_user2_password">
+<div class="input-group">
+    <input type="password" name="x_password" id="x_password" autocomplete="new-password" data-field="x_password" size="30" maxlength="256" placeholder="@(HtmlEncode(user2Add.password.PlaceHolder))"@Html.Raw(user2Add.password.EditAttributes) aria-describedby="x_password_help">
+    <button type="button" class="btn btn-default ew-toggle-password rounded-end" data-ew-action="password"><i class="fa-solid fa-eye"></i></button>
+</div>
+@Html.Raw(user2Add.password.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(user2Add.password.GetErrorMessage())</div>
+</span>
+</div></div>
+    </div>
+} @* user2Add.password.Visible (end) *@
+@if (user2Add._userlevel.Visible) { // user2Add._userlevel.Visible (begin)
+    <div id="r__userlevel" @Html.Raw(user2Add._userlevel.RowAttributes)>
+        <label id="elh_user2__userlevel" for="x__userlevel" class="@(user2Add.LeftColumnClass)">@Html.Raw(user2Add._userlevel.Caption)@Html.Raw(user2Add._userlevel.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(user2Add.RightColumnClass)"><div @Html.Raw(user2Add._userlevel.CellAttributes)>
+@if (!Security.IsAdmin && Security.IsLoggedIn) { // Non system admin
+<span id="el_user2__userlevel">
+<span class="form-control-plaintext">@Html.Raw(user2Add._userlevel.DisplayValue(user2Add._userlevel.EditValue))</span>
+</span>
+} else {
+<span id="el_user2__userlevel">
+    <select
+        id="x__userlevel"
+        name="x__userlevel"
+        class="form-select ew-select@(user2Add._userlevel.IsInvalidClass)"
+        data-select2-id="fuser2add_x__userlevel"
+        data-table="user2"
+        data-field="x__userlevel"
+        data-value-separator="@(user2Add._userlevel.DisplayValueSeparatorAttribute)"
+        data-placeholder="@(HtmlEncode(user2Add._userlevel.PlaceHolder))"
+        @Html.Raw(user2Add._userlevel.EditAttributes)>
+        @(user2Add._userlevel.SelectOptionListHtml("x__userlevel"))
+    </select>
+    @Html.Raw(user2Add._userlevel.GetCustomMessage)
+    <div class="invalid-feedback">@Html.Raw(user2Add._userlevel.GetErrorMessage())</div>
+<script>
+loadjs.ready("fuser2add", function() {
+    var options = { name: "x__userlevel", selectId: "fuser2add_x__userlevel" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fuser2add.lists._userlevel?.lookupOptions.length) {
+        options.data = { id: "x__userlevel", form: "fuser2add" };
+    } else {
+        options.ajax = { id: "x__userlevel", form: "fuser2add", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.user2.fields._userlevel.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+</span>
+}
+</div></div>
+    </div>
+} @* user2Add._userlevel.Visible (end) *@
+</div><!-- /page* -->
+@{ user2Add.CloseRecordset(); }
+@Html.Raw(user2Add.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(user2Add.OffsetColumnClass)"><!-- buttons offset -->
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fuser2add">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fuser2add" data-href="@AppPath(user2Add.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(user2Add.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@user2Add.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("user2");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

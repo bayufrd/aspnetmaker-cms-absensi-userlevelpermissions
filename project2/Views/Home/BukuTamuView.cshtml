@@ -1,0 +1,129 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (bukuTamuView.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = bukuTamuView.UseLayout ? "_Layout" : "";
+}
+@if (!bukuTamuView.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @bukuTamuView.ExportOptions.RenderBody()
+    @bukuTamuView.OtherOptions.RenderBody()
+</div>
+}
+@bukuTamuView.ShowPageHeader()
+@bukuTamuView.ShowMessages()
+<main class="view">
+<form name="fbuku_tamuview" id="fbuku_tamuview" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!bukuTamuView.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuView.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fbuku_tamuview;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fbuku_tamuview")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(bukuTamuView.IsModal)">
+<table class="@(bukuTamuView.TableClass)">
+@if (bukuTamuView.id.Visible) { // bukuTamuView.id.Visible (begin)
+    <tr id="r_id" @Html.Raw(bukuTamuView.id.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_id">@Html.Raw(bukuTamuView.id.Caption)</span></td>
+        <td data-name="id" @Html.Raw(bukuTamuView.id.CellAttributes)>
+<span id="el_buku_tamu_id">
+<span @Html.Raw(bukuTamuView.id.ViewAttributes)>
+@Html.Raw(bukuTamuView.id.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.id.Visible (end) *@
+@if (bukuTamuView.nama.Visible) { // bukuTamuView.nama.Visible (begin)
+    <tr id="r_nama" @Html.Raw(bukuTamuView.nama.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_nama">@Html.Raw(bukuTamuView.nama.Caption)</span></td>
+        <td data-name="nama" @Html.Raw(bukuTamuView.nama.CellAttributes)>
+<span id="el_buku_tamu_nama">
+<span @Html.Raw(bukuTamuView.nama.ViewAttributes)>
+@Html.Raw(bukuTamuView.nama.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.nama.Visible (end) *@
+@if (bukuTamuView.umur.Visible) { // bukuTamuView.umur.Visible (begin)
+    <tr id="r_umur" @Html.Raw(bukuTamuView.umur.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_umur">@Html.Raw(bukuTamuView.umur.Caption)</span></td>
+        <td data-name="umur" @Html.Raw(bukuTamuView.umur.CellAttributes)>
+<span id="el_buku_tamu_umur">
+<span @Html.Raw(bukuTamuView.umur.ViewAttributes)>
+@Html.Raw(bukuTamuView.umur.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.umur.Visible (end) *@
+@if (bukuTamuView.tanggal_kunjungan.Visible) { // bukuTamuView.tanggal_kunjungan.Visible (begin)
+    <tr id="r_tanggal_kunjungan" @Html.Raw(bukuTamuView.tanggal_kunjungan.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_tanggal_kunjungan">@Html.Raw(bukuTamuView.tanggal_kunjungan.Caption)</span></td>
+        <td data-name="tanggal_kunjungan" @Html.Raw(bukuTamuView.tanggal_kunjungan.CellAttributes)>
+<span id="el_buku_tamu_tanggal_kunjungan">
+<span @Html.Raw(bukuTamuView.tanggal_kunjungan.ViewAttributes)>
+@Html.Raw(bukuTamuView.tanggal_kunjungan.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuView.tujuan.Visible) { // bukuTamuView.tujuan.Visible (begin)
+    <tr id="r_tujuan" @Html.Raw(bukuTamuView.tujuan.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_tujuan">@Html.Raw(bukuTamuView.tujuan.Caption)</span></td>
+        <td data-name="tujuan" @Html.Raw(bukuTamuView.tujuan.CellAttributes)>
+<span id="el_buku_tamu_tujuan">
+<span @Html.Raw(bukuTamuView.tujuan.ViewAttributes)>
+@Html.Raw(bukuTamuView.tujuan.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.tujuan.Visible (end) *@
+@if (bukuTamuView.komentar.Visible) { // bukuTamuView.komentar.Visible (begin)
+    <tr id="r_komentar" @Html.Raw(bukuTamuView.komentar.RowAttributes)>
+        <td class="@(bukuTamuView.TableLeftColumnClass)"><span id="elh_buku_tamu_komentar">@Html.Raw(bukuTamuView.komentar.Caption)</span></td>
+        <td data-name="komentar" @Html.Raw(bukuTamuView.komentar.CellAttributes)>
+<span id="el_buku_tamu_komentar">
+<span @Html.Raw(bukuTamuView.komentar.ViewAttributes)>
+@Html.Raw(bukuTamuView.komentar.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* bukuTamuView.komentar.Visible (end) *@
+</table>
+@{ bukuTamuView.CloseRecordset(); }
+</form>
+</main>
+@bukuTamuView.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!bukuTamuView.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

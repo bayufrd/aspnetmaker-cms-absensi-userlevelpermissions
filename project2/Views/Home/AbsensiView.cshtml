@@ -1,0 +1,149 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (absensiView.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = absensiView.UseLayout ? "_Layout" : "";
+}
+@if (!absensiView.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @absensiView.ExportOptions.RenderBody()
+    @absensiView.OtherOptions.RenderBody()
+</div>
+}
+@absensiView.ShowPageHeader()
+@absensiView.ShowMessages()
+<main class="view">
+<form name="fabsensiview" id="fabsensiview" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!absensiView.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(absensiView.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { absensi: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fabsensiview;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fabsensiview")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(absensiView.IsModal)">
+<table class="@(absensiView.TableClass)">
+@if (absensiView.id.Visible) { // absensiView.id.Visible (begin)
+    <tr id="r_id" @Html.Raw(absensiView.id.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_id">@Html.Raw(absensiView.id.Caption)</span></td>
+        <td data-name="id" @Html.Raw(absensiView.id.CellAttributes)>
+<span id="el_absensi_id">
+<span @Html.Raw(absensiView.id.ViewAttributes)>
+@Html.Raw(absensiView.id.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.id.Visible (end) *@
+@if (absensiView.user_id.Visible) { // absensiView.user_id.Visible (begin)
+    <tr id="r_user_id" @Html.Raw(absensiView.user_id.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_user_id">@Html.Raw(absensiView.user_id.Caption)</span></td>
+        <td data-name="user_id" @Html.Raw(absensiView.user_id.CellAttributes)>
+<span id="el_absensi_user_id">
+<span @Html.Raw(absensiView.user_id.ViewAttributes)>
+@Html.Raw(absensiView.user_id.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.user_id.Visible (end) *@
+@if (absensiView.tanggal.Visible) { // absensiView.tanggal.Visible (begin)
+    <tr id="r_tanggal" @Html.Raw(absensiView.tanggal.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_tanggal">@Html.Raw(absensiView.tanggal.Caption)</span></td>
+        <td data-name="tanggal" @Html.Raw(absensiView.tanggal.CellAttributes)>
+<span id="el_absensi_tanggal">
+<span @Html.Raw(absensiView.tanggal.ViewAttributes)>
+@Html.Raw(absensiView.tanggal.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.tanggal.Visible (end) *@
+@if (absensiView.jam_masuk.Visible) { // absensiView.jam_masuk.Visible (begin)
+    <tr id="r_jam_masuk" @Html.Raw(absensiView.jam_masuk.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_jam_masuk">@Html.Raw(absensiView.jam_masuk.Caption)</span></td>
+        <td data-name="jam_masuk" @Html.Raw(absensiView.jam_masuk.CellAttributes)>
+<span id="el_absensi_jam_masuk">
+<span @Html.Raw(absensiView.jam_masuk.ViewAttributes)>
+@Html.Raw(absensiView.jam_masuk.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.jam_masuk.Visible (end) *@
+@if (absensiView.jam_keluar.Visible) { // absensiView.jam_keluar.Visible (begin)
+    <tr id="r_jam_keluar" @Html.Raw(absensiView.jam_keluar.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_jam_keluar">@Html.Raw(absensiView.jam_keluar.Caption)</span></td>
+        <td data-name="jam_keluar" @Html.Raw(absensiView.jam_keluar.CellAttributes)>
+<span id="el_absensi_jam_keluar">
+<span @Html.Raw(absensiView.jam_keluar.ViewAttributes)>
+@Html.Raw(absensiView.jam_keluar.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.jam_keluar.Visible (end) *@
+@if (absensiView.status.Visible) { // absensiView.status.Visible (begin)
+    <tr id="r_status" @Html.Raw(absensiView.status.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_status">@Html.Raw(absensiView.status.Caption)</span></td>
+        <td data-name="status" @Html.Raw(absensiView.status.CellAttributes)>
+<span id="el_absensi_status">
+<span @Html.Raw(absensiView.status.ViewAttributes)>
+@Html.Raw(absensiView.status.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.status.Visible (end) *@
+@if (absensiView.lokasi.Visible) { // absensiView.lokasi.Visible (begin)
+    <tr id="r_lokasi" @Html.Raw(absensiView.lokasi.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_lokasi">@Html.Raw(absensiView.lokasi.Caption)</span></td>
+        <td data-name="lokasi" @Html.Raw(absensiView.lokasi.CellAttributes)>
+<span id="el_absensi_lokasi">
+<span @Html.Raw(absensiView.lokasi.ViewAttributes)>
+@Html.Raw(absensiView.lokasi.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.lokasi.Visible (end) *@
+@if (absensiView.foto_verifikasi.Visible) { // absensiView.foto_verifikasi.Visible (begin)
+    <tr id="r_foto_verifikasi" @Html.Raw(absensiView.foto_verifikasi.RowAttributes)>
+        <td class="@(absensiView.TableLeftColumnClass)"><span id="elh_absensi_foto_verifikasi">@Html.Raw(absensiView.foto_verifikasi.Caption)</span></td>
+        <td data-name="foto_verifikasi" @Html.Raw(absensiView.foto_verifikasi.CellAttributes)>
+<span id="el_absensi_foto_verifikasi">
+<span @Html.Raw(absensiView.foto_verifikasi.ViewAttributes)>
+@Html.Raw(absensiView.foto_verifikasi.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* absensiView.foto_verifikasi.Visible (end) *@
+</table>
+@{ absensiView.CloseRecordset(); }
+</form>
+</main>
+@absensiView.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!absensiView.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

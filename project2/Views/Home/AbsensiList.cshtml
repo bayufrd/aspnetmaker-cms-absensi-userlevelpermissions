@@ -1,0 +1,317 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (absensiList.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = absensiList.UseLayout ? "_Layout" : "";
+}
+@if (!absensiList.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(absensiList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { absensi: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(absensiList.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(absensiList.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(absensiList.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(absensiList.FormKeyCountName)")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!absensiList.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (absensiList.TotalRecords > 0 && absensiList.ExportOptions.Visible) {
+    absensiList.ExportOptions.Render("body");
+}
+@if (absensiList.ImportOptions.Visible) {
+    absensiList.ImportOptions.Render("body");
+}
+@if (absensiList.SearchOptions.Visible) {
+    absensiList.SearchOptions.Render("body");
+}
+@if (absensiList.FilterOptions.Visible) {
+    absensiList.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!absensiList.IsModal) {
+<form name="fabsensisrch" id="fabsensisrch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fabsensisrch_search_panel" class="mb-2 mb-sm-0 @(absensiList.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(absensiList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { absensi: currentTable } });
+var currentForm;
+var fabsensisrch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fabsensisrch")
+        .setPageId("list")
+@if (absensiList.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(absensiList.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (Security.CanSearch) {
+if (!absensiList.IsExport() && Empty(absensiList.CurrentAction) && absensiList.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(absensiList.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(absensiList.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(absensiList.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(absensiList.BasicSearch.SessionType == "" ? " active" : "")" form="fabsensisrch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(absensiList.BasicSearch.SessionType == "=" ? " active" : "")" form="fabsensisrch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(absensiList.BasicSearch.SessionType == "AND" ? " active" : "")" form="fabsensisrch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(absensiList.BasicSearch.SessionType == "OR" ? " active" : "")" form="fabsensisrch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+}
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@absensiList.ShowPageHeader()
+@absensiList.ShowMessages()
+<main class="list @(absensiList.TotalRecords == 0 && !absensiList.IsAdd ? " ew-no-record" : "")">
+<div id="ew-header-options">
+    @absensiList.HeaderOptions.RenderBody()
+</div>
+<div id="ew-list">
+@if (absensiList.TotalRecords > 0 || !Empty(absensiList.CurrentAction)) {
+<div class="card ew-card ew-grid@(absensiList.IsAddOrEdit ? " ew-grid-add-edit" : "") @(absensiList.TableGridClass)">
+<form name="@(absensiList.FormName)" id="@(absensiList.FormName)" class="ew-form ew-list-form" action="@AppPath(absensiList.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (absensiList.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_absensi" class="card-body ew-grid-middle-panel @(absensiList.TableContainerClass)" style="@(absensiList.TableContainerStyle)">
+@if (absensiList.TotalRecords > 0 || absensiList.IsGridEdit || absensiList.IsMultiEdit) {
+<table id="tbl_absensilist" class="@(absensiList.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    absensiList.RowType = RowType.Header;
+
+    // Render list options
+    await absensiList.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@absensiList.ListOptions.RenderHeader("left")
+@if (absensiList.id.Visible) { // absensiList.id.Visible (begin)
+        <th data-name="id" class="@(absensiList.id.HeaderCellClass)"><div id="elh_absensi_id" class="absensi_id">@Html.Raw(absensiList.RenderFieldHeader(absensiList.id))</div></th>
+} @* absensiList.id.Visible (end) *@
+@if (absensiList.user_id.Visible) { // absensiList.user_id.Visible (begin)
+        <th data-name="user_id" class="@(absensiList.user_id.HeaderCellClass)"><div id="elh_absensi_user_id" class="absensi_user_id">@Html.Raw(absensiList.RenderFieldHeader(absensiList.user_id))</div></th>
+} @* absensiList.user_id.Visible (end) *@
+@if (absensiList.tanggal.Visible) { // absensiList.tanggal.Visible (begin)
+        <th data-name="tanggal" class="@(absensiList.tanggal.HeaderCellClass)"><div id="elh_absensi_tanggal" class="absensi_tanggal">@Html.Raw(absensiList.RenderFieldHeader(absensiList.tanggal))</div></th>
+} @* absensiList.tanggal.Visible (end) *@
+@if (absensiList.jam_masuk.Visible) { // absensiList.jam_masuk.Visible (begin)
+        <th data-name="jam_masuk" class="@(absensiList.jam_masuk.HeaderCellClass)"><div id="elh_absensi_jam_masuk" class="absensi_jam_masuk">@Html.Raw(absensiList.RenderFieldHeader(absensiList.jam_masuk))</div></th>
+} @* absensiList.jam_masuk.Visible (end) *@
+@if (absensiList.jam_keluar.Visible) { // absensiList.jam_keluar.Visible (begin)
+        <th data-name="jam_keluar" class="@(absensiList.jam_keluar.HeaderCellClass)"><div id="elh_absensi_jam_keluar" class="absensi_jam_keluar">@Html.Raw(absensiList.RenderFieldHeader(absensiList.jam_keluar))</div></th>
+} @* absensiList.jam_keluar.Visible (end) *@
+@if (absensiList.status.Visible) { // absensiList.status.Visible (begin)
+        <th data-name="status" class="@(absensiList.status.HeaderCellClass)"><div id="elh_absensi_status" class="absensi_status">@Html.Raw(absensiList.RenderFieldHeader(absensiList.status))</div></th>
+} @* absensiList.status.Visible (end) *@
+@if (absensiList.lokasi.Visible) { // absensiList.lokasi.Visible (begin)
+        <th data-name="lokasi" class="@(absensiList.lokasi.HeaderCellClass)"><div id="elh_absensi_lokasi" class="absensi_lokasi">@Html.Raw(absensiList.RenderFieldHeader(absensiList.lokasi))</div></th>
+} @* absensiList.lokasi.Visible (end) *@
+@if (absensiList.foto_verifikasi.Visible) { // absensiList.foto_verifikasi.Visible (begin)
+        <th data-name="foto_verifikasi" class="@(absensiList.foto_verifikasi.HeaderCellClass)"><div id="elh_absensi_foto_verifikasi" class="absensi_foto_verifikasi">@Html.Raw(absensiList.RenderFieldHeader(absensiList.foto_verifikasi))</div></th>
+} @* absensiList.foto_verifikasi.Visible (end) *@
+@* Render list options (header, right) *@
+@absensiList.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(absensiList.PageNumber)">
+@{
+    await absensiList.SetupGrid();
+    bool eof = absensiList.Recordset == null; // DN
+}
+@while (absensiList.RecordCount < absensiList.StopRecord || SameString(absensiList.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(absensiList.RowIndex, "$rowindex$") &&
+        (!absensiList.IsGridAdd || absensiList.CurrentMode == "copy") &&
+        (!((absensiList.IsCopy || absensiList.IsAdd) && absensiList.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await absensiList.Recordset.ReadAsync();
+    absensiList.RecordCount++;
+    if (absensiList.RecordCount >= absensiList.StartRecord) {
+        await absensiList.SetupRow();
+    <tr @Html.Raw(absensiList.RowAttributes)>
+    @* Render list options (body, left) *@
+    @absensiList.ListOptions.RenderBody("left", absensiList.RowCount)
+    @if (absensiList.id.Visible) { // absensiList.id.Visible (begin)
+        <td data-name="id" @Html.Raw(absensiList.id.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_id" class="el_absensi_id">
+<span @Html.Raw(absensiList.id.ViewAttributes)>
+@Html.Raw(absensiList.id.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.id.Visible (end) *@
+    @if (absensiList.user_id.Visible) { // absensiList.user_id.Visible (begin)
+        <td data-name="user_id" @Html.Raw(absensiList.user_id.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_user_id" class="el_absensi_user_id">
+<span @Html.Raw(absensiList.user_id.ViewAttributes)>
+@Html.Raw(absensiList.user_id.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.user_id.Visible (end) *@
+    @if (absensiList.tanggal.Visible) { // absensiList.tanggal.Visible (begin)
+        <td data-name="tanggal" @Html.Raw(absensiList.tanggal.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_tanggal" class="el_absensi_tanggal">
+<span @Html.Raw(absensiList.tanggal.ViewAttributes)>
+@Html.Raw(absensiList.tanggal.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.tanggal.Visible (end) *@
+    @if (absensiList.jam_masuk.Visible) { // absensiList.jam_masuk.Visible (begin)
+        <td data-name="jam_masuk" @Html.Raw(absensiList.jam_masuk.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_jam_masuk" class="el_absensi_jam_masuk">
+<span @Html.Raw(absensiList.jam_masuk.ViewAttributes)>
+@Html.Raw(absensiList.jam_masuk.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.jam_masuk.Visible (end) *@
+    @if (absensiList.jam_keluar.Visible) { // absensiList.jam_keluar.Visible (begin)
+        <td data-name="jam_keluar" @Html.Raw(absensiList.jam_keluar.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_jam_keluar" class="el_absensi_jam_keluar">
+<span @Html.Raw(absensiList.jam_keluar.ViewAttributes)>
+@Html.Raw(absensiList.jam_keluar.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.jam_keluar.Visible (end) *@
+    @if (absensiList.status.Visible) { // absensiList.status.Visible (begin)
+        <td data-name="status" @Html.Raw(absensiList.status.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_status" class="el_absensi_status">
+<span @Html.Raw(absensiList.status.ViewAttributes)>
+@Html.Raw(absensiList.status.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.status.Visible (end) *@
+    @if (absensiList.lokasi.Visible) { // absensiList.lokasi.Visible (begin)
+        <td data-name="lokasi" @Html.Raw(absensiList.lokasi.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_lokasi" class="el_absensi_lokasi">
+<span @Html.Raw(absensiList.lokasi.ViewAttributes)>
+@Html.Raw(absensiList.lokasi.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.lokasi.Visible (end) *@
+    @if (absensiList.foto_verifikasi.Visible) { // absensiList.foto_verifikasi.Visible (begin)
+        <td data-name="foto_verifikasi" @Html.Raw(absensiList.foto_verifikasi.CellAttributes)>
+<span id="el@(absensiList.RowIndex == "$rowindex$" ? "$rowindex$" : absensiList.RowCount)_absensi_foto_verifikasi" class="el_absensi_foto_verifikasi">
+<span @Html.Raw(absensiList.foto_verifikasi.ViewAttributes)>
+@Html.Raw(absensiList.foto_verifikasi.GetViewValue())</span>
+</span>
+</td>
+    } @* absensiList.foto_verifikasi.Visible (end) *@
+    @* Render list options (body, right) *@
+    @absensiList.ListOptions.RenderBody("right", absensiList.RowCount)
+    </tr>
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(absensiList.RowIndex, "$rowindex$"))
+        absensiList.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((absensiList.IsCopy || absensiList.IsAdd) && absensiList.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        absensiList.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(absensiList.CurrentAction) && !absensiList.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ absensiList.CloseRecordset(); }
+@if (!absensiList.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!absensiList.IsGridAdd && !(absensiList.IsGridEdit && absensiList.ModalGridEdit) && !absensiList.IsMultiEdit) {
+@Html.Raw(absensiList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@absensiList.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@absensiList.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+</div>
+<div id="ew-footer-options">
+    @absensiList.FooterOptions.RenderBody()
+</div>
+</main>
+@absensiList.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!absensiList.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("absensi");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

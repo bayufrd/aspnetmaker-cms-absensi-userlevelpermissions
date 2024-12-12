@@ -1,0 +1,99 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (userlevelpermissionsView.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = userlevelpermissionsView.UseLayout ? "_Layout" : "";
+}
+@if (!userlevelpermissionsView.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @userlevelpermissionsView.ExportOptions.RenderBody()
+    @userlevelpermissionsView.OtherOptions.RenderBody()
+</div>
+}
+@userlevelpermissionsView.ShowPageHeader()
+@userlevelpermissionsView.ShowMessages()
+<main class="view">
+<form name="fuserlevelpermissionsview" id="fuserlevelpermissionsview" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!userlevelpermissionsView.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(userlevelpermissionsView.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { userlevelpermissions: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fuserlevelpermissionsview;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fuserlevelpermissionsview")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(userlevelpermissionsView.IsModal)">
+<table class="@(userlevelpermissionsView.TableClass)">
+@if (userlevelpermissionsView.UserLevelID.Visible) { // userlevelpermissionsView.UserLevelID.Visible (begin)
+    <tr id="r_UserLevelID" @Html.Raw(userlevelpermissionsView.UserLevelID.RowAttributes)>
+        <td class="@(userlevelpermissionsView.TableLeftColumnClass)"><span id="elh_userlevelpermissions_UserLevelID">@Html.Raw(userlevelpermissionsView.UserLevelID.Caption)</span></td>
+        <td data-name="UserLevelID" @Html.Raw(userlevelpermissionsView.UserLevelID.CellAttributes)>
+<span id="el_userlevelpermissions_UserLevelID">
+<span @Html.Raw(userlevelpermissionsView.UserLevelID.ViewAttributes)>
+@Html.Raw(userlevelpermissionsView.UserLevelID.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* userlevelpermissionsView.UserLevelID.Visible (end) *@
+@if (userlevelpermissionsView._TableName.Visible) { // userlevelpermissionsView._TableName.Visible (begin)
+    <tr id="r__TableName" @Html.Raw(userlevelpermissionsView._TableName.RowAttributes)>
+        <td class="@(userlevelpermissionsView.TableLeftColumnClass)"><span id="elh_userlevelpermissions__TableName">@Html.Raw(userlevelpermissionsView._TableName.Caption)</span></td>
+        <td data-name="_TableName" @Html.Raw(userlevelpermissionsView._TableName.CellAttributes)>
+<span id="el_userlevelpermissions__TableName">
+<span @Html.Raw(userlevelpermissionsView._TableName.ViewAttributes)>
+@Html.Raw(userlevelpermissionsView._TableName.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* userlevelpermissionsView._TableName.Visible (end) *@
+@if (userlevelpermissionsView.Permission.Visible) { // userlevelpermissionsView.Permission.Visible (begin)
+    <tr id="r_Permission" @Html.Raw(userlevelpermissionsView.Permission.RowAttributes)>
+        <td class="@(userlevelpermissionsView.TableLeftColumnClass)"><span id="elh_userlevelpermissions_Permission">@Html.Raw(userlevelpermissionsView.Permission.Caption)</span></td>
+        <td data-name="Permission" @Html.Raw(userlevelpermissionsView.Permission.CellAttributes)>
+<span id="el_userlevelpermissions_Permission">
+<span @Html.Raw(userlevelpermissionsView.Permission.ViewAttributes)>
+@Html.Raw(userlevelpermissionsView.Permission.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* userlevelpermissionsView.Permission.Visible (end) *@
+</table>
+@{ userlevelpermissionsView.CloseRecordset(); }
+</form>
+</main>
+@userlevelpermissionsView.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!userlevelpermissionsView.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

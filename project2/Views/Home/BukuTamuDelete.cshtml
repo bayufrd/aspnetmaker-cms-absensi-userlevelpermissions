@@ -1,0 +1,151 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (bukuTamuDelete.ActionResult is EmptyResult) // Terminate page
+        return;
+
+    // Layout
+    Layout = bukuTamuDelete.UseLayout ? "_Layout" : "";
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(bukuTamuDelete.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { buku_tamu: currentTable } });
+var currentPageID = ew.PAGE_ID = "delete";
+var currentForm;
+var fbuku_tamudelete;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fbuku_tamudelete")
+        .setPageId("delete")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@bukuTamuDelete.ShowPageHeader()
+@bukuTamuDelete.ShowMessages()
+<form name="fbuku_tamudelete" id="fbuku_tamudelete" class="ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage?.CheckToken ?? false) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in bukuTamuDelete.RecordKeys) {
+<input type="hidden" name="key_m[]" value="@key">
+}
+<div class="card ew-card ew-grid @(bukuTamuDelete.TableGridClass)">
+<div class="card-body ew-grid-middle-panel @(bukuTamuDelete.TableContainerClass)" style="@(bukuTamuDelete.TableContainerStyle)">
+<table class="@(bukuTamuDelete.TableClass)">
+    <thead>
+    <tr class="ew-table-header">
+@if (bukuTamuDelete.id.Visible) { // bukuTamuDelete.id.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.id.HeaderCellClass)"><span id="elh_buku_tamu_id" class="buku_tamu_id">@Html.Raw(bukuTamuDelete.id.Caption)</span></th>
+} @* bukuTamuDelete.id.Visible (end) *@
+@if (bukuTamuDelete.nama.Visible) { // bukuTamuDelete.nama.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.nama.HeaderCellClass)"><span id="elh_buku_tamu_nama" class="buku_tamu_nama">@Html.Raw(bukuTamuDelete.nama.Caption)</span></th>
+} @* bukuTamuDelete.nama.Visible (end) *@
+@if (bukuTamuDelete.umur.Visible) { // bukuTamuDelete.umur.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.umur.HeaderCellClass)"><span id="elh_buku_tamu_umur" class="buku_tamu_umur">@Html.Raw(bukuTamuDelete.umur.Caption)</span></th>
+} @* bukuTamuDelete.umur.Visible (end) *@
+@if (bukuTamuDelete.tanggal_kunjungan.Visible) { // bukuTamuDelete.tanggal_kunjungan.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.tanggal_kunjungan.HeaderCellClass)"><span id="elh_buku_tamu_tanggal_kunjungan" class="buku_tamu_tanggal_kunjungan">@Html.Raw(bukuTamuDelete.tanggal_kunjungan.Caption)</span></th>
+} @* bukuTamuDelete.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuDelete.tujuan.Visible) { // bukuTamuDelete.tujuan.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.tujuan.HeaderCellClass)"><span id="elh_buku_tamu_tujuan" class="buku_tamu_tujuan">@Html.Raw(bukuTamuDelete.tujuan.Caption)</span></th>
+} @* bukuTamuDelete.tujuan.Visible (end) *@
+@if (bukuTamuDelete.komentar.Visible) { // bukuTamuDelete.komentar.Visible (begin)
+        <th class="@Html.Raw(bukuTamuDelete.komentar.HeaderCellClass)"><span id="elh_buku_tamu_komentar" class="buku_tamu_komentar">@Html.Raw(bukuTamuDelete.komentar.Caption)</span></th>
+} @* bukuTamuDelete.komentar.Visible (end) *@
+    </tr>
+    </thead>
+    <tbody>
+@{ bukuTamuDelete.RecordCount = 0; }
+@while (bukuTamuDelete.Recordset != null && await bukuTamuDelete.Recordset.ReadAsync()) { // DN
+    bukuTamuDelete.RecordCount++;
+    bukuTamuDelete.RowCount++;
+
+    // Set row properties
+    bukuTamuDelete.ResetAttributes();
+    bukuTamuDelete.RowType = RowType.View; // View
+
+    // Get the field contents
+    await bukuTamuDelete.LoadRowValues(bukuTamuDelete.Recordset);
+
+    // Render row
+    await bukuTamuDelete.RenderRow();
+    <tr @Html.Raw(bukuTamuDelete.RowAttributes)>
+@if (bukuTamuDelete.id.Visible) { // bukuTamuDelete.id.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.id.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.id.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.id.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.id.Visible (end) *@
+@if (bukuTamuDelete.nama.Visible) { // bukuTamuDelete.nama.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.nama.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.nama.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.nama.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.nama.Visible (end) *@
+@if (bukuTamuDelete.umur.Visible) { // bukuTamuDelete.umur.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.umur.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.umur.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.umur.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.umur.Visible (end) *@
+@if (bukuTamuDelete.tanggal_kunjungan.Visible) { // bukuTamuDelete.tanggal_kunjungan.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.tanggal_kunjungan.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.tanggal_kunjungan.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.tanggal_kunjungan.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.tanggal_kunjungan.Visible (end) *@
+@if (bukuTamuDelete.tujuan.Visible) { // bukuTamuDelete.tujuan.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.tujuan.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.tujuan.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.tujuan.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.tujuan.Visible (end) *@
+@if (bukuTamuDelete.komentar.Visible) { // bukuTamuDelete.komentar.Visible (begin)
+        <td @Html.Raw(bukuTamuDelete.komentar.CellAttributes)>
+<span id="">
+<span @Html.Raw(bukuTamuDelete.komentar.ViewAttributes)>
+@Html.Raw(bukuTamuDelete.komentar.GetViewValue())</span>
+</span></td>
+} @* bukuTamuDelete.komentar.Visible (end) *@
+    </tr>
+}
+@{ bukuTamuDelete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div class="ew-buttons ew-desktop-buttons">
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(bukuTamuDelete.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+</div>
+</form>
+@bukuTamuDelete.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
